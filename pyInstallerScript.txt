@@ -1,0 +1,3 @@
+pyinstaller --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "C:/Users/%username%/PycharmProjects/PyWall/img/placeholder.ico" --add-data "C:/Users/%username%/PycharmProjects/PyWall/img;im
+g/" --add-data "C:/Users/%username%/PycharmProjects/PyWall/src;src/" --add-data "C:\Users\%username%\.virtualenvs\PyWall-xDhsp6i3\Lib\site-packages\context_menu;context_menu\" "C:/Users/%username%/PycharmProject
+s/PyWall/main.py"
