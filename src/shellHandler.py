@@ -111,7 +111,7 @@ def createInternetAccessMenu():
     for x in sub_keys:
         current_sub_key = winreg.QueryValue(key, x)
         argIndex = winreg.QueryValue(key, x).index(" -c ")
-        # About the dumbest way to query for the fourth semi-colon #
+        # About the dumbest way to query for the third semi-colon #
         firstSemi = current_sub_key.find(";")
         secondSemi = current_sub_key.find(";", firstSemi + 1)
         thirdSemi = current_sub_key.find(";", secondSemi + 1)
