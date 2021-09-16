@@ -28,21 +28,21 @@ if __name__ == '__main__':
                 arg_len = len(sys.argv)
                 argument = str(args.c)
                 # Allow Internet Access #
-                if "shellHandler.allowAccess" in argument:
+                if "allowAccess" in argument:
                     from src.shellHandler import allowAccess
                     actionLogger("Shell action is allowAccess, allowing...")
                     actionLogger(sys.argv[int(arg_len)-1])
                     allowAccess(sys.argv[int(arg_len)-1], "")
                     sys.exit(0)
                 # Deny Internet Access #
-                elif "shellHandler.denyAccess" in argument:
+                elif "denyAccess" in argument:
                     from src.shellHandler import denyAccess
                     actionLogger("Shell action is denyAccess, blocking...")
                     actionLogger(sys.argv[int(arg_len)-1])
                     denyAccess(sys.argv[int(arg_len)-1], "")
                     sys.exit(0)
             try:
-                # Filtering, there's probably a more efficient way to do this #
+                # Filtering, there's probably a more efficient way to do this, and it's probably no longer necessary #
                 toReplace = r"\\"
                 replacement = "\\"
                 if len(sys.argv) != 1 or len(sys.argv) != 0:

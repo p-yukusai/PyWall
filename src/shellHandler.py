@@ -4,6 +4,8 @@ from context_menu import menus
 
 
 # Having to define stuff anew in this script, since it's technically separate in the context of the shell #
+
+
 def documentFolder():
     import ctypes.wintypes
     doc = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
@@ -15,6 +17,8 @@ def documentFolder():
 def getScriptFolder():
     document_folder = documentFolder()
     return document_folder + "\\PyWall\\Executable.txt"
+
+
 # Making the messagebox in Qt saves space in the executable, otherwise we would have the good old Tkinter bloat #
 def pop(title, text, close: bool):
     import sys
@@ -41,6 +45,8 @@ def pop(title, text, close: bool):
 
 
 # The "open" command is repeated because I'm too lazy to define it and then just call it later, code redundancy go brr #
+
+
 def allowAccess(filenames, params):
     try:
         with open(getScriptFolder(), 'r') as sf:
@@ -50,9 +56,10 @@ def allowAccess(filenames, params):
 
     try:
         if pathlib.Path(folder + "//PyWall.exe").is_file() or pathlib.Path(folder + "//main.py").is_file():
-            os.system(f'cmd /c cd {folder} && PyWall.exe -file {filenames} -allow true')
+            print(folder)
+            os.system(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow true')
             # input() #
-            os.system(f'cmd /c cd {folder} && python {folder}\main.py -file {filenames} -allow true')
+            os.system(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow true')
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -70,9 +77,9 @@ def denyAccess(filenames, params):
 
     try:
         if pathlib.Path(folder + "//PyWall.exe").is_file() or pathlib.Path(folder + "//main.py").is_file():
-            os.system(f'cmd /c cd {folder} && PyWall.exe -file {filenames}')
+            os.system(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}"')
             # input() #
-            os.system(f'cmd /c cd {folder} && python {folder}\main.py -file {filenames} ')
+            os.system(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" ')
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -84,6 +91,7 @@ def denyAccess(filenames, params):
 # This creates the context menu, It is important to do this for FILES and for DIRECTORY so that the user can right #
 # click on either. The keys created are in "HKEY_CURRENT_USER\Software\Classes\*\shell\" for FILES and in #
 # "HKEY_CURRENT_USER\Software\Classes\Directory\shell" for DIRECTORY #
+
 def createInternetAccessMenu():
     IAM = menus.ContextMenu('PyWall', type='FILES')
     IAM.add_items([menus.ContextCommand('Allow Internet Access', python=allowAccess),
@@ -98,12 +106,14 @@ def createInternetAccessMenu():
     # This is a to bypass a limitation of context_menu, or rather, of the "Run" command. #
     # In brief, the run command can only be a certain length, so we're removing some of the text from the handler #
     # and replacing it with a custom parser in "main.py" #
+
     import winreg
 
     IAM_FILES_ALLOW = r"Software\Classes\*\shell\PyWall\shell\Allow Internet Access\command"
     IAM_FILES_DENY = r"Software\Classes\*\shell\PyWall\shell\Deny Internet Access\command"
     IAM_DIR_ALLOW = r"Software\Classes\Directory\shell\PyWall\shell\Allow Internet Access\command"
     IAM_DIR_DENY = r"Software\Classes\Directory\shell\PyWall\shell\Deny Internet Access\command"
+
     key = winreg.HKEY_CURRENT_USER
     sub_keys = [IAM_FILES_ALLOW, IAM_FILES_DENY, IAM_DIR_ALLOW, IAM_DIR_DENY]
 
@@ -119,8 +129,13 @@ def createInternetAccessMenu():
         else:
             accessIndex = current_sub_key.find("shellHandler.denyAccess") + 23
         quoteIndex = current_sub_key.find('"', thirdSemi)
-        replacement_sub_key = current_sub_key[:argIndex + 4] + current_sub_key[thirdSemi + 1: accessIndex] + \
-                              current_sub_key[quoteIndex:]
+        if "python.exe" in current_sub_key[:argIndex]:
+            # This is for testing within the source, as I cannot find another solution to this problem #
+            # if you have one, please push a PR #
+            replacement_sub_key = current_sub_key
+        else:
+            replacement_sub_key = current_sub_key[:argIndex + 4] + current_sub_key[thirdSemi + 1: accessIndex] + \
+                                  current_sub_key[quoteIndex + 1:]
         winreg.SetValue(key, x, winreg.REG_SZ, replacement_sub_key)
 
 

@@ -2,6 +2,7 @@ import os
 import sys
 import ctypes
 from pathlib import Path
+
 # I know toasts can be made via PowerShell script, but I cannot be bothered to do so ;) #
 if len(sys.argv) != 1 or 0:
     from src.pop import toastNotification
@@ -78,7 +79,7 @@ def denyAccess(path: Path):
                         if z in Path(path).suffix:
                             allFiles = [path]
         except OSError as rareBug:  # Indeed a rare bug with the context menu, I believe for it to be fixed #
-            logException(rareBug)   # but just in case I'll leave this in. #
+            logException(rareBug)  # but just in case I'll leave this in. #
 
         if allFiles is None or str(allFiles) == "[]":
             pathError(path)
@@ -100,7 +101,12 @@ def denyAccess(path: Path):
                 except NameError:
                     actionLogger("Commands detected, skipping infoMessage")
                     pass
-                ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+
+                # This code gives me a "held together with spit and glue" kinda vibe #
+                args = "".join(sys.argv)
+                fileIndex = args.index("-file=")
+                args = '"' + args[:fileIndex] + '" ' + args[fileIndex:fileIndex + 6] + '"' + args[fileIndex + 6:]
+                ctypes.windll.shell32.ShellExecuteW(None, u"runas", sys.executable, args, None, 1)
                 sys.exit("Admin re-run")
 
     except Exception as Argument:
@@ -135,7 +141,6 @@ def allowAccess(path: Path):
 
         for y in allFiles:
             p = Path(y)
-            print(allFiles)
             command = f'netsh advfirewall firewall delete rule name="PyWall blocked {str(p.stem)}" dir=out program=' \
                       f'"{p}"'
             if Admin():
@@ -149,7 +154,14 @@ def allowAccess(path: Path):
                 except NameError:
                     actionLogger("Commands detected, skipping infoMessage")
                     pass
-                ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+
+                args = "".join(sys.argv)
+                fileIndex = args.index("-file=")
+                allowIndex = args.index("-allow")
+                args = '"' + args[:fileIndex] + '" ' + args[fileIndex:fileIndex + 6] + '"' + args[fileIndex + 6:
+                                                                                                  allowIndex]\
+                       + '" ' + "-" + args[allowIndex + 1:allowIndex + 6] + " " + args[allowIndex + 6:]
+                ctypes.windll.shell32.ShellExecuteW(None, u"runas", sys.executable, args, None, 1)
                 sys.exit("Admin re-run")
     except Exception as Argument:
         logException(Argument)
