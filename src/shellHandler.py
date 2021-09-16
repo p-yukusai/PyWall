@@ -56,7 +56,6 @@ def allowAccess(filenames, params):
 
     try:
         if pathlib.Path(folder + "//PyWall.exe").is_file() or pathlib.Path(folder + "//main.py").is_file():
-            print(folder)
             os.system(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow true')
             # input() #
             os.system(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow true')
