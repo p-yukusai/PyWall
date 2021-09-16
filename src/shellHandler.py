@@ -98,7 +98,6 @@ def createInternetAccessMenu():
     # This is a to bypass a limitation of context_menu, or rather, of the "Run" command. #
     # In brief, the run command can only be a certain length, so we're removing some of the text from the handler #
     # and replacing it with a custom parser in "main.py" #
-    
     import winreg
 
     IAM_FILES_ALLOW = r"Software\Classes\*\shell\PyWall\shell\Allow Internet Access\command"
@@ -115,17 +114,13 @@ def createInternetAccessMenu():
         firstSemi = current_sub_key.find(";")
         secondSemi = current_sub_key.find(";", firstSemi + 1)
         thirdSemi = current_sub_key.find(";", secondSemi + 1)
-        print(thirdSemi)
         if "shellHandler.allowAccess" in current_sub_key:
             accessIndex = current_sub_key.find("shellHandler.allowAccess") + 24
         else:
             accessIndex = current_sub_key.find("shellHandler.denyAccess") + 23
         quoteIndex = current_sub_key.find('"', thirdSemi)
-        print(quoteIndex)
-
         replacement_sub_key = current_sub_key[:argIndex + 4] + current_sub_key[thirdSemi + 1: accessIndex] + \
                               current_sub_key[quoteIndex:]
-        print(replacement_sub_key)
         winreg.SetValue(key, x, winreg.REG_SZ, replacement_sub_key)
 
 
