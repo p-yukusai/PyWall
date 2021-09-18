@@ -18,11 +18,11 @@ PyWall
   
 ## What is it? 🔐
 
-This is a small application, written in Python and Qt, that makes it easy to block or allow applications from access to the internet, it contains a graphical user interface and a shell extension, so you may choose between the benefits of an easy-to-use GUI app with the efficiency of just right click any folder or file for maximum convinience! <br />
+This is a small application, written in Python and Qt, that makes it easy to block or allow applications from access to the internet, it contains a graphical user interface and a shell extension, so you may choose between the benefits of an easy-to-use GUI app with the efficiency of just right clicking any folder or file for maximum convinience! <br />
 PyWall was heavily inspired by [OneClickFirewall](https://winaero.com/oneclickfirewall/) by Winaero, and you should totally check that app out!
 
 ## What does it do? 🔓
-This app esentially writes a rule to the Windows Firewall to deny access to just about anything, however by default only executable files will be taken into consideration, as a consequence of interacting with directly with the Firewall, this app requires elevation to properly work. <br />
+This app esentially writes a rule to the Windows Firewall to deny access to just about anything, however by default only executable files will be taken into consideration, as a consequence of interacting directly with the Firewall, this app requires elevation to properly work. <br />
 PyWall also has the ability to block or allow entire folders (which was the main reason behind its development, since OneClickFirewall lacks the ability to do so 👀), the way it does this is by sorting through the entire folder to look for all files with a matching type, then it will either block or allow all matches. <br />
 The code was written (to the best of my ability) with the intent of being read by just about anyone, so go right ahead and look through my spaguetti code by yourself if you want to know how the app works in more detail!
 
