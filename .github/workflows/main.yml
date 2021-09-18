@@ -17,7 +17,8 @@ jobs:
             python-version: 3.9
       - name: Install dependencies
         run: pipenv install && pipenv install pyinstaller
-      - name: env
+      - name: Get env
+        id: env
         run: pipenv --venv
       - name: Build
         run: pipenv run pyinstaller pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data "${{steps.env.output}}"\Lib\site-packages\context_menu;context_menu\"
