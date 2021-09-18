@@ -20,7 +20,7 @@ jobs:
       - name: env
         run: pipenv --venv
       - name: Build
-        run: pipenv run pyinstaller pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data ""${{steps.env.output}}""\Lib\site-packages\context_menu;context_menu\"
+        run: pipenv run pyinstaller pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data "${{steps.env.output}}"\Lib\site-packages\context_menu;context_menu\"
       - name: Zip artifact
         uses: vimtor/action-zip@v1
         with:
