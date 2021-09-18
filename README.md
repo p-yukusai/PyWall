@@ -9,10 +9,10 @@ PyWall
 </p>
 
 <h1 align="center">
-<a href=https://github.com/p-yukusai/PyWall/blob/main/LICENSE >
+<a href=https://github.com/p-yukusai/PyWall/blob/main/LICENSE>
   <img alt="Licence" src="https://img.shields.io/github/license/p-yukusai/PyWall?style=for-the-badge">
 </a>
-<a href=https://ko-fi.com/V7V04YLC3 >
+<a href=https://ko-fi.com/V7V04YLC3>
   <img alt="ko-fi" src="https://img.shields.io/badge/Donate-Support%20me%20on%20Ko--Fi-red?style=for-the-badge&logo=ko-fi">
 </a>
   
