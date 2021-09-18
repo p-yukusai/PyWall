@@ -15,6 +15,10 @@ PyWall
 <a href=https://ko-fi.com/V7V04YLC3>
   <img alt="ko-fi" src="https://img.shields.io/badge/Donate-Support%20me%20on%20Ko--Fi-red?style=for-the-badge&logo=ko-fi">
 </a>
+<a href=https://github.com/p-yukusai/PyWall/actions>
+    <img alt="Build" src="https://img.shields.io/github/workflow/status/p-yukusai/PyWall/PyWall%20CI?style=for-the-badge">
+</a>
+</h1>
   
 ## What is it? 🔐
 
