@@ -17,9 +17,11 @@ jobs:
             python-version: 3.9
       - name: Install dependencies and build
         run:  |
-              pipenv shell 
-              pipenv sync 
-              pipenv install pyinstaller
+              pip install pyqt5
+              pip install qt-material
+              pip install context-menu
+              pip install winotify
+              pip install pyinstaller
               pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data "C:\Users\runneradmin\.virtualenvs\PyWall-65-QOBsy\Lib\site-packages\context_menu;context_menu\"
       - name: Zip artifact
         uses: vimtor/action-zip@v1
