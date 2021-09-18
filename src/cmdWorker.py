@@ -56,7 +56,9 @@ def path_foreach_in(path):  # A rather telling name, isn't?
     import os
     from glob import glob
     glob_pattern = os.path.join(path, '*')
-    files = sorted(glob(glob_pattern), key=os.path.getctime)
+    filesNoRecursive = sorted(glob(glob_pattern), key=os.path.getctime)
+    files = sorted(glob(glob_pattern+r"/**", recursive=True), key=os.path.getctime)
+    files = sorted(files + filesNoRecursive, key=os.path.getctime)
     return files
 
 
