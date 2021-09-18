@@ -1,1 +1,4 @@
-pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data "C:\Users\%username%\AppData\Local\Programs\Python\Python39\Lib\site-packages\context_menu;context_menu\"
+# Steps to build, remember to replace the variables with your username and the valid location of the pipenv, you can get it with "pipenv --venv" #
+pipenv sync
+pipenv shell
+pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data "C:\Users\%username%\.virtualenvs\PyWall*\Lib\site-packages\context_menu;context_menu\"
