@@ -14,10 +14,6 @@ This app esentially writes a rule to the Windows Firewall to deny access to just
 PyWall also has the ability to block or allow entire folders (which was the main reason behind its development, since OneClickFirewall lacks the ability to do so 👀), the way it does this is by sorting through the entire folder to look for all files with a matching type, then it will either block or allow all matches. <br />
 The code was written (to the best of my ability) with the intent of being read by just about anyone, so go right ahead and look through my spaguetti code by yourself if you want to know how the app works in more detail!
 
-## Known bugs 🐛
-- Console is not properly hidden when the Toast Notification is called while using the shell extension.
-- Janky way of detecting the installation, which may break if the user changes the app's folder.
-
 ## Anything else? 🚀
 Nope, that's it. I hope you have some use for this little app!
 ## 
