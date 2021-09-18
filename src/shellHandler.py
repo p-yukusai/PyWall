@@ -45,6 +45,12 @@ def pop(title, text, close: bool):
 
 
 # The "open" command is repeated because I'm too lazy to define it and then just call it later, code redundancy go brr #
+def pyWallPath(folder):
+    return pathlib.Path(folder + "//PyWall.exe")
+
+
+def pyWallScript(folder):
+    return pathlib.Path(folder + "//main.py")
 
 
 def allowAccess(filenames, params):
@@ -55,7 +61,7 @@ def allowAccess(filenames, params):
         pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
 
     try:
-        if pathlib.Path(folder + "//PyWall.exe").is_file() or pathlib.Path(folder + "//main.py").is_file():
+        if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
             os.system(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow true')
             # input() #
             os.system(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow true')
@@ -75,7 +81,7 @@ def denyAccess(filenames, params):
         pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
 
     try:
-        if pathlib.Path(folder + "//PyWall.exe").is_file() or pathlib.Path(folder + "//main.py").is_file():
+        if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
             os.system(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}"')
             # input() #
             os.system(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" ')
