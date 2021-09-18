@@ -1,0 +1,1 @@
+pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data "C:\Users\%username%\AppData\Local\Programs\Python\Python39\Lib\site-packages\context_menu;context_menu\"
