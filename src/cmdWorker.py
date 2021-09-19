@@ -46,7 +46,7 @@ def pathError(path: Path):
             toastNotification("No accepted filetypes", f'No file in\n"{path}"\nis a valid target, please try again.')
         else:
             toastNotification("Filetype not accepted", f'Suffix "{path.suffix}" in file "{path.name}" is not a valid'
-                                                       f'target, please try again')
+                                                       f' target, please try again')
         return
 
 
