@@ -26,9 +26,9 @@ This is a small application, written in Python and Qt, that makes it easy to blo
 PyWall was heavily inspired by [OneClickFirewall](https://winaero.com/oneclickfirewall/) by Winaero, and you should totally check that app out!
 
 ## What does it do? 🔓
-This app esentially writes a rule to the [Windows Firewall](## "Needless to say, it is required that you have your Firewall active") to deny access to just about anything, by default only executable files will be taken into consideration. 
-As a consequence of interacting directly with the Firewall, this app requires elevation to properly work.<br /> This app does not have the ability to allow internet access for apps that have already been blocked by means other than PyWall itself, for instance custom firewalls, previous firewall rules, etc.<br/><br />
-PyWall also has the ability to block or allow entire folders (which was the main reason behind its development, since OneClickFirewall lacks the ability to do so 👀), the way it does this is by sorting through the entire folder to look for all files with a matching type, then it will either block or allow all matches, this is done recursively, meaning that *every* folder inside the initial selection will be scanned, so please be careful with what you select!<br /><br />
+This app esentially writes a rule to the [Windows Firewall](#technical-explination) to deny access to just about anything, by default only executable files will be taken into consideration; as a consequence of interacting directly with the Firewall, this app requires elevation to properly work.<br /> Pywall does not and cannot allow internet access for apps that have already been blocked by means other than itself, for instance, any custom firewalls, existing rules, WFP, etc.<br/><br />
+
+This program has the ability to block or allow almost any file, it can even do so with entire folders of them (which was the main reason behind its development, since OneClickFirewall lacks the ability to do so 👀), the way it does this is by sorting through the entire folder to look for all files with a [matching type](#parsing:), then it will either block or allow all matches, this also scans all sub-folders by default, meaning that *every* folder inside the initial selection will be scanned, so please be careful with what you select!<br /><br />
 The code was written (to the best of my ability) with the intent of being read by just about anyone, so go right ahead and look through my spaguetti code by yourself if you want to know how the app works in more detail!
 
 ## Is PyWall malware?! ☣️
@@ -42,7 +42,7 @@ You are free to read the code and compile it yourself, use the artifacts availab
 ## Technical explination 👩‍🔬
 
 #### Tl;dr:
-PyWall essentially runs a command from an elevated prompt to either add or remove (if it exists) a rule from the Windows Firewall, additionally, it uses PyQt5 alongside with qt-material to draw the GUI, winotify to create toast notifications and context_menu, combined with some custom regkey manipulation, to create the context menu.
+PyWall essentially runs a command from an elevated prompt to either add or remove (if it exists) a rule from the Windows Firewall, needless to say, you *need* to have your firewall active to make any practical use of this program, additionally, it uses PyQt5 alongside with qt-material to draw the GUI, winotify to create toast notifications and context_menu, combined with some custom regkey manipulation, to create the context menu.
 
 #### The command:
 The command runs from the src/cmdWorker.py script, and it is as follows:
