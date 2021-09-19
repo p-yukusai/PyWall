@@ -32,7 +32,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: "PyWall.zip"
+          name: "PyWall"
           path: ${{ github.workspace }}/PyWall.zip
         
       
