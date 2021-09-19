@@ -41,8 +41,17 @@ You are free to read the code and compile it yourself, use the artifacts availab
 I believe it to be important to remind people of the potential dangers of programs that interact with the security features of your system, this is why it is so valuable to be able to review what a certain piece software does and doesn't do, as such, please excercise caution with what you install on your system!<br/> If you do not trust a particular piece of software, you can just not install it, use a sandbox or block its internet access to make having it on your system a bit more secure, and, since you're already here, why not use PyWall for the later? 😉.
  
 ## Anything else? 🚀
-Nope, that's it. I hope you have some use for this little app!
+Nope! That's all there really is to it. I hope you have some use for this little app!
 ## 
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/contains-tasty-spaghetti-code.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
+
+<h1 align="center">
+<a href=https://forthebadge.com>
+  <img alt="With Love" src="https://forthebadge.com/images/badges/built-with-love.svg">
+</a>
+<a href=https://forthebadge.com>
+  <img alt="With Spaguett" src="https://forthebadge.com/images/badges/contains-tasty-spaghetti-code.svg">
+</a>
+<a href=https://forthebadge.com>
+    <img alt="With Python" src="https://forthebadge.com/images/badges/made-with-python.svg">
+</a>
+</h1>
