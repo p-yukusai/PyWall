@@ -251,31 +251,84 @@
             <string>Config GUI</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_6">
-            <item row="6" column="3" colspan="2">
-             <widget class="QLineEdit" name="typesLineEdit">
+            <item row="9" column="1">
+             <widget class="QPushButton" name="removeBlacklist">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="font">
-               <font>
-                <family>Montserrat</family>
-                <pointsize>14</pointsize>
-               </font>
+              <property name="text">
+               <string>Remove</string>
               </property>
-              <property name="inputMethodHints">
-               <set>Qt::ImhNone</set>
+             </widget>
+            </item>
+            <item row="7" column="0" colspan="2">
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="9" column="0">
+             <widget class="QPushButton" name="addBlacklist">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
               <property name="text">
-               <string/>
+               <string>Add</string>
               </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
+             </widget>
+            </item>
+            <item row="2" column="0" colspan="2">
+             <widget class="QPushButton" name="removeShell">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+                <horstretch>0</horstretch>
+                <verstretch>1</verstretch>
+               </sizepolicy>
               </property>
-              <property name="placeholderText">
-               <string>Accepted file types</string>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This will remove the context menu that allows you to easily allow or deny internet access.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Remove shell extension</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="2">
+             <spacer name="horizontalSpacer_9">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="9" column="4">
+             <widget class="QPushButton" name="removeTypes">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Remove</string>
               </property>
              </widget>
             </item>
@@ -292,47 +345,6 @@
               </property>
              </spacer>
             </item>
-            <item row="2" column="3" colspan="2">
-             <widget class="QPushButton" name="selectTheme">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Select Theme</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0" colspan="2">
-             <widget class="QLineEdit" name="blacklistLineEdit">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>4</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="font">
-               <font>
-                <family>Montserrat</family>
-                <pointsize>14</pointsize>
-               </font>
-              </property>
-              <property name="inputMethodHints">
-               <set>Qt::ImhNone</set>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="placeholderText">
-               <string>Ignored filenames</string>
-              </property>
-             </widget>
-            </item>
             <item row="9" column="3">
              <widget class="QPushButton" name="addTypes">
               <property name="sizePolicy">
@@ -346,8 +358,8 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="0" colspan="2">
-             <spacer name="horizontalSpacer_6">
+            <item row="5" column="0" colspan="2">
+             <spacer name="horizontalSpacer_8">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -359,55 +371,34 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="0" colspan="2">
-             <spacer name="horizontalSpacer_9">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="7" column="0" colspan="2">
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="2" column="0" colspan="2">
-             <widget class="QPushButton" name="removeShell">
+            <item row="6" column="3" colspan="2">
+             <widget class="QLineEdit" name="typesLineEdit">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-                <horstretch>0</horstretch>
-                <verstretch>1</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Remove shell extension</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="0">
-             <widget class="QPushButton" name="addBlacklist">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="font">
+               <font>
+                <family>Montserrat</family>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;All accepted file suffixes that the program will look for, for example &amp;quot;.exe&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="inputMethodHints">
+               <set>Qt::ImhNone</set>
+              </property>
               <property name="text">
-               <string>Add</string>
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="placeholderText">
+               <string>Accepted file types</string>
               </property>
              </widget>
             </item>
@@ -423,6 +414,37 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="6" column="0" colspan="2">
+             <widget class="QLineEdit" name="blacklistLineEdit">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>4</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <family>Montserrat</family>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The program will ignore files whose names are on this list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="inputMethodHints">
+               <set>Qt::ImhNone</set>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="placeholderText">
+               <string>Ignored filenames</string>
+              </property>
+             </widget>
             </item>
             <item row="1" column="3" colspan="2">
              <widget class="QComboBox" name="themeComboBox">
@@ -446,32 +468,6 @@
               </property>
              </widget>
             </item>
-            <item row="9" column="1">
-             <widget class="QPushButton" name="removeBlacklist">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Remove</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="4">
-             <widget class="QPushButton" name="removeTypes">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Remove</string>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="0" colspan="2">
              <widget class="QPushButton" name="installShell">
               <property name="sizePolicy">
@@ -480,23 +476,74 @@
                 <verstretch>1</verstretch>
                </sizepolicy>
               </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This will create a context menu to easily block or allow internet access.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
               <property name="text">
                <string>Install shell extension</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="0" colspan="2">
-             <spacer name="horizontalSpacer_8">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+            <item row="2" column="3" colspan="2">
+             <widget class="QPushButton" name="selectTheme">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
+              <property name="text">
+               <string>Select Theme</string>
               </property>
-             </spacer>
+             </widget>
+            </item>
+            <item row="4" column="3">
+             <widget class="QCheckBox" name="actionlogCheckbox">
+              <property name="font">
+               <font>
+                <family>Montserrat</family>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Create logs for most actions taken by the program</string>
+              </property>
+              <property name="text">
+               <string>Log actions</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="4">
+             <widget class="QCheckBox" name="exceptionlogCheckbox">
+              <property name="font">
+               <font>
+                <family>Montserrat</family>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Create logs on any exceptions that may occur</string>
+              </property>
+              <property name="text">
+               <string>Log exceptions</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0" colspan="2">
+             <widget class="QCheckBox" name="recursiveCheckbox">
+              <property name="font">
+               <font>
+                <family>Montserrat</family>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Search selected folder recursively</string>
+              </property>
+              <property name="text">
+               <string>Search sub-folders</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -1025,11 +1072,11 @@
       <property name="font">
        <font>
         <family>Montserrat</family>
-        <pointsize>15</pointsize>
+        <pointsize>16</pointsize>
        </font>
       </property>
       <property name="text">
-       <string>PyWall</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;🔥 &lt;span style=&quot; font-weight:600;&quot;&gt;PyWall &lt;/span&gt;🔥&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

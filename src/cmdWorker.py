@@ -61,8 +61,15 @@ def path_foreach_in(path):  # A rather telling name, isn't?
     from glob import glob
     glob_pattern = os.path.join(path, '*')
     filesNoRecursive = sorted(glob(glob_pattern), key=os.path.getctime)
-    files = sorted(glob(glob_pattern+r"/**", recursive=True), key=os.path.getctime)
-    files = sorted(files + filesNoRecursive, key=os.path.getctime)
+    filesRecursive = sorted(glob(glob_pattern+r"/**", recursive=True), key=os.path.getctime)
+    if getConfig("FILETYPE", "recursive") == "True":
+        files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
+    elif getConfig("FILETYPE", "recursive") == "False":
+        files = filesNoRecursive
+    else:
+        from src.config import modifyConfig
+        modifyConfig("FILETYPE", "recursive", "True")
+        files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
     return files
 
 
@@ -96,8 +103,8 @@ def denyAccess(path: Path):
         for y in allFiles:
             p = Path(y)
             # Yup, this is all the program really does, about 40 hours of coding just to get this to work 〒▽〒 #
-            command = f'netsh advfirewall firewall add rule name="PyWall blocked {str(p.stem)}" dir=out program=' \
-                      f'"{p}" action=block'
+            command = f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked {str(p.stem)}" ' \
+                      f'dir=out program="{p}" action=block'
             if Admin():
                 os.system(f'cmd /c {command}')
                 actionLogger(f"Successfully blocked {str(p.stem)}")
@@ -149,8 +156,8 @@ def allowAccess(path: Path):
 
         for y in allFiles:
             p = Path(y)
-            command = f'netsh advfirewall firewall delete rule name="PyWall blocked {str(p.stem)}" dir=out program=' \
-                      f'"{p}"'
+            command = f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked {str(p.stem)}" ' \
+                      f'dir=out program="{p}"'
             if Admin():
                 os.system(f'cmd /c {command}')
                 actionLogger(f"Successfully allowed {str(p.stem)}")

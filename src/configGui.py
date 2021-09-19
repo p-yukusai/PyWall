@@ -3,6 +3,7 @@ import sys
 import src.shellHandler
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import *
 from PyQt5 import uic
 from qt_material import apply_stylesheet, list_themes
 from src.config import getConfig, config_read, modifyConfig, appendConfig, removeConfig
@@ -68,9 +69,20 @@ class UI(QMainWindow):
         current_theme_index = allThemes.index(current_theme)
         current_string = theme_string[current_theme_index]
         self.themeComboBox.setCurrentText(current_string)
-        # Connections #
+        if getConfig("FILETYPE", "recursive") == "True":
+            self.recursiveCheckbox.setChecked(True)
+        if getConfig("DEBUG", "create_logs") == "True":
+            self.actionlogCheckbox.setChecked(True)
+        if getConfig("DEBUG", "create_exception_logs") == "True":
+            self.exceptionlogCheckbox.setChecked(True)
+
+        # --- # Path # --- #
         self.fileSelect.clicked.connect(self.selectedFile)
         self.folderSelect.clicked.connect(self.selectedFolder)
+        # --- # ComboBox # --- #
+        self.recursiveCheckbox.stateChanged.connect(self.recursiveChanged)
+        self.actionlogCheckbox.stateChanged.connect(self.actionlogChanged)
+        self.exceptionlogCheckbox.stateChanged.connect(self.exceptionlogChanged)
         # --- # Access # --- #
         self.allowAccess.clicked.connect(self.Allow)
         self.denyAccess.clicked.connect(self.Deny)
@@ -129,6 +141,33 @@ class UI(QMainWindow):
                                                                                    " available when right-clicking a "
                                                                                    "file or a folder", icon)
         modifyConfig("DEBUG", "shell", "False")
+
+    # Checkboxes #
+    def recursiveChanged(self, state):
+        if Qt.Checked == state:
+            self.recursiveCheckbox.setChecked(True)
+            modifyConfig("FILETYPE", "recursive", "True")
+        else:
+
+            self.recursiveCheckbox.setChecked(False)
+            modifyConfig("FILETYPE", "recursive", "False")
+
+    def actionlogChanged(self, state):
+        if Qt.Checked == state:
+            self.actionlogCheckbox.setChecked(True)
+            modifyConfig("DEBUG", "create_logs", "True")
+        else:
+            self.actionlogCheckbox.setChecked(False)
+            modifyConfig("DEBUG", "create_logs", "False")
+
+    def exceptionlogChanged(self, state):
+        if Qt.Checked == state:
+            self.exceptionlogCheckbox.setChecked(True)
+            modifyConfig("DEBUG", "create_exception_logs", "True")
+        else:
+
+            self.exceptionlogCheckbox.setChecked(False)
+            modifyConfig("DEBUG", "create_exception_logs", "False")
 
     # Path handler #
     def selectedFile(self):

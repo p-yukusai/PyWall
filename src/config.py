@@ -55,8 +55,8 @@ def configFile():
 # Sections #
 sections = ["FILETYPE", "GUI", "DEBUG"]
 # File #
-sets_file = ["accepted_types", "blacklisted_names"]
-set_default_file = [".exe", ""]
+sets_file = ["accepted_types", "blacklisted_names", "recursive"]
+set_default_file = [".exe", "", "True"]
 # Gui #
 sets_gui = ["advanced_mode", "stylesheet", "first_run"]
 set_default_gui = ["False", "dark_red.xml", "True"]
@@ -79,8 +79,13 @@ def default():
     for x in range(len(sections)):
         sec = sections[x]
         for se in sets[x]:
+            if config.has_option(sec, se):  # Sec(tions), Se(ts) #
+                if len(sets_default[x]) > value_int:
+                    value_int += 1
+                if len(sets_default[x]) == value_int:
+                    value_int = 0
             if not config.has_option(sec, se):
-                config.set(sec, se, sets_default[x][value_int])  # Sec(tions), Se(ts) #
+                config.set(sec, se, sets_default[x][value_int])
                 if len(sets_default[x]) > value_int:
                     value_int += 1
                 if len(sets_default[x]) == value_int:
