@@ -42,7 +42,11 @@ def pathError(path: Path):
         return
     except NameError:
         actionLogger("Commands detected, skipping infoMessage, no accepted filetypes were found")
-        toastNotification("No accepted filetypes", f'No file in "{path}" is a valid target, please try again.')
+        if path.is_dir():
+            toastNotification("No accepted filetypes", f'No file in\n"{path}"\nis a valid target, please try again.')
+        else:
+            toastNotification("Filetype not accepted", f'Suffix "{path.suffix} in file "{path.name}" is not a valid'
+                                                       f'target, please try again')
         return
 
 
