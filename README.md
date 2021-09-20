@@ -31,14 +31,6 @@ This app esentially writes a rule to the [Windows Firewall](#technical-explinati
 This program has the ability to block or allow almost any file, it can even do so with entire folders of them (which was the main reason behind its development, since OneClickFirewall lacks the ability to do so 👀), the way it does this is by sorting through the entire folder to look for all files with a [matching type](#parsing), then it will either block or allow all matches, this also scans all sub-folders by default, meaning that *every* folder inside the initial selection will be scanned, so please be careful with what you select!<br /><br />
 The code was written (to the best of my ability) with the intent of being read by just about anyone, so go right ahead and look through my spaguetti code by yourself if you want to know how the app works in more detail!
 
-## Is PyWall malware?! ☣️
-#### No.
-As previously mentioned, this app interacts directly with the firewall, this is done via [console command](#the-command) through the use of the OS library from Python and as such it requires elevation to work, this in and of itself should *not* trigger any alert, but the app gets flagged as a Trojan regardless by some security software, why is this?<br/>
-The most likely immediate cause of this issue is the use of PyInstaller to compile the program into an executable, which has quite the [history](https://github.com/pyinstaller/pyinstaller/issues?q=is%3Aissue+virus+is%3Aclosed+) with AV's falsely detecting executables created with it as Trojans, as a consequence of this [five antivirus vendors](## "Antiy-AVL, VBA32, Zillya, Yandex and Microsoft") have wrongly flagged this app as "malicious", this is what's commonly described as a [false positive](https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/images/false-positives-overview.png?view=o365-worldwide).<br/>
-
-As seen in the attatched [VirusTotal report](https://www.virustotal.com/gui/file/4f6b1ef718632803404e00f0611350698c9aa35c560e63a658f52df7eb727e20), better (and quite frankly more reputable) antiviruses than those five do *not* detect PyWall as malware, that's because it isn't, a lot of apps compiled with PyInstaller and, in general, software that interacts with the security of the system have this same issue, even OneClickFirewall has a [similar issue](https://www.virustotal.com/gui/file/c5b2fd236c9430b2d8ed48d6b08526753ecc47f2246af668e3b757cc54cd26e5), though greatly reduced, this is *probably* due to the compiler itself, and not any significant deviation of what the code actually does, since as far as I'm able to tell the aforementioned software uses the same method to deny or allow internet access, that being, to write a rule directly to the firewall.<br/><br/>
-You are free to read the code and compile it yourself, use the artifacts available by clicking on the latest run [here](https://github.com/p-yukusai/PyWall/actions) (as the [process](https://github.com/p-yukusai/PyWall/actions/workflows/main.yml) and [code](https://github.com/p-yukusai/PyWall/blob/master/.github/workflows/main.yml) by which the program is compiled are freely available for anyone to see and scrutinize) and review/use the [.iss script](https://github.com/p-yukusai/PyWall/blob/master/PyWall%20Installer.iss) used to create the installer available in the "releases" section.
-
 ## Technical explination 👩‍🔬
 
 #### Tl;dr:
@@ -59,6 +51,22 @@ The program has two variables that define what will and won't be considered in t
 
 For files it's fairly simple, the variable that will be used to run the command is just the path from the file selected, for folders it will check if "recursive" in the config file is set to true or false, if true it will check the folder and all subfolders for matches, otherwise only the initial folder will be scanned, either way, the variable will be a list containing one or more paths to all accepted matches, which will later be allowed or blocked by the command. 
 The command is run for each item detected.
+
+
+## Is PyWall malware?! ☣️
+
+#### No.
+
+As previously mentioned, this app interacts directly with the firewall, this is done via [console command](#the-command) through the use of the OS library from Python and as such it requires elevation to work, this in and of itself should *not* trigger any alert, but the app gets flagged as a Trojan regardless by some security software, why is this?<br/>
+
+The most likely immediate cause of this issue is the use of PyInstaller to compile the program into an executable, which has quite the [history](https://github.com/pyinstaller/pyinstaller/issues?q=is%3Aissue+virus+is%3Aclosed+) with AV's falsely detecting executables created with it as Trojans, as a consequence of this [five antivirus vendors](## "Antiy-AVL, VBA32, Zillya, Yandex and Microsoft") have wrongly flagged this app as "malicious", this is what's commonly described as a [false positive](https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/images/false-positives-overview.png?view=o365-worldwide).<br/>
+
+
+
+As seen in the attatched [VirusTotal report](https://www.virustotal.com/gui/file/4f6b1ef718632803404e00f0611350698c9aa35c560e63a658f52df7eb727e20), better (and quite frankly more reputable) antiviruses than those five do *not* detect PyWall as malware, that's because it isn't, a lot of apps compiled with PyInstaller and, in general, software that interacts with the security of the system have this same issue, even OneClickFirewall has a [similar issue](https://www.virustotal.com/gui/file/c5b2fd236c9430b2d8ed48d6b08526753ecc47f2246af668e3b757cc54cd26e5), though greatly reduced, this is *probably* due to the compiler itself, and not any significant deviation of what the code actually does, since as far as I'm able to tell the aforementioned software uses the same method to deny or allow internet access, that being, to write a rule directly to the firewall.<br/><br/>
+
+You are free to read the code and compile it yourself, to use the artifacts available by clicking on the latest run [here](https://github.com/p-yukusai/PyWall/actions) (as the [process](https://github.com/p-yukusai/PyWall/actions/workflows/main.yml) and [code](https://github.com/p-yukusai/PyWall/blob/master/.github/workflows/main.yml) by which the program is compiled are freely available for anyone to see and scrutinize) and review/use the [.iss script](https://github.com/p-yukusai/PyWall/blob/master/PyWall%20Installer.iss) used to create the installer available in the "releases" section.
+
 
 ## PSA 🌠
 I believe it to be important to remind people of the potential dangers of programs that interact with the security features of your system, this is why it is so valuable to be able to review what a certain piece software does and doesn't do, as such, please excercise caution with what you install on your system!<br/> If you do not trust a particular piece of software, you can just not install it, use a sandbox or block its internet access to make having it on your system a bit more secure, and, since you're already here, why not use PyWall for the later? 😉.
