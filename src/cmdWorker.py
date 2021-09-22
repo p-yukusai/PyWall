@@ -190,9 +190,9 @@ def allowAccess(path: Path):
 
 
 def openConfig():
-    os.system(f'cmd /c {configFile()}')
+    os.system(f'cmd /c @echo off && {configFile()}')
 
 
 # For debugging purposes #
 def customCommand(command):
-    os.system(f'cmd /c {command}')
+    os.system(f'cmd /c @echo off & {command}')
