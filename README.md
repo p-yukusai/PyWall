@@ -47,7 +47,7 @@ The command runs from the src/cmdWorker.py script, and it is as follows:
 
 
 #### Parsing:
-What the program does when the user attempts to allow or deny the internet access varies depending on the path detected results in a file or a directory.
+What the program does when the user attempts to allow or deny the internet access varies depending on the path detected being either a file or a directory.
 
 The program has two variables that define what will and won't be considered in the parse, these are "blacklisted_names" and "accepted_types", the former is a list of all filenames (e.g. Discord, Chrome, etc.) that *won't* be considered by the parser and the latter is a list of all accepted suffixes (e.g.: .exe, .msi, etc.) that *will* be considered by the parser.
 
