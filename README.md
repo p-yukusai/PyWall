@@ -40,10 +40,11 @@ PyWall essentially runs a command from an elevated prompt to either add or remov
 #### The command:
 The command runs from the src/cmdWorker.py script, and it is as follows:
 ```cmd
-@echo off && netsh advfirewall firewall {add/delete} rule name="PyWall blocked {filename}" dir=out program="{file path}" action=block
+@echo off && netsh advfirewall firewall {add/delete} rule name="PyWall blocked {filename}" dir=out program="{file path}" {action=block}
 ```
 - echo is turned off to avoid having a bunch of consoles popping up.
 - "netsh advfirewall firewall" allows interaction with the rules of the firewall, in the program "Allow Internet Access" will *delete* the rule if it exists and "Deny Internet Access" will *add* it.
+
 
 #### Parsing:
 What the program does when the user attempts to allow or deny the internet access varies depending on the path detected results in a file or a directory.
