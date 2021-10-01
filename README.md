@@ -35,7 +35,7 @@ The code was written (to the best of my ability) with the intent of being read b
 ## Technical explanation 👩‍🔬
 
 #### Tl;dr:
-PyWall essentially runs a command from an elevated prompt to either add or remove (if it exists) a rule from the Windows Firewall, needless to say, you *need* to have your firewall active to make any practical use of this program, additionally, it uses PyQt5 alongside with qt-material to draw the GUI, winotify to create toast notifications and context_menu, combined with some custom regkey manipulation, to create the context menu.
+PyWall essentially runs a command from an elevated prompt to either add or remove (if it exists) a rule from the Windows Firewall, needless to say, you *need* to have your firewall active to make any practical use of this program, additionally, it uses PyQt5 with qt-material to draw the GUI, winotify to create toast notifications and context_menu, combined with some custom regkey manipulation, to create the context menu.
 
 #### The command:
 The command runs from the src/cmdWorker.py script, and it is as follows:
