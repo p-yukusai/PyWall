@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "PyWall"
-#define MyAppVersion "1.1"
+#define MyAppVersion "1.2" ; Major version only, can be fetched from config.py
 #define MyAppPublisher "Yukusai"
 #define MyAppURL "https://github.com/p-yukusai/PyWall"
 #define MyAppExeName "PyWall.exe"

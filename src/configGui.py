@@ -1,10 +1,14 @@
 import pathlib
 import sys
+
+import pyqt5Custom
+
 import src.shellHandler
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import *
 from PyQt5 import uic
+from pyqt5Custom import DragDropFile
 from qt_material import apply_stylesheet, list_themes
 from src.config import getConfig, config_read, modifyConfig, appendConfig, removeConfig
 from src.logger import actionLogger
@@ -75,10 +79,19 @@ class UI(QMainWindow):
             self.actionlogCheckbox.setChecked(True)
         if getConfig("DEBUG", "create_exception_logs") == "True":
             self.exceptionlogCheckbox.setChecked(True)
-
+        self.dropFile = DragDropFile()
+        self.dropFile.setFixedWidth(625)
+        self.dropFile.setFixedHeight(100)
+        self.dragGrid.addWidget(self.dropFile)
         # --- # Path # --- #
         self.fileSelect.clicked.connect(self.selectedFile)
         self.folderSelect.clicked.connect(self.selectedFolder)
+
+        @self.dropFile.fileDropped.connect
+        def slot(file):
+            path = file.path
+            self.pathLineEdit.setText(path)
+
         # --- # ComboBox # --- #
         self.recursiveCheckbox.stateChanged.connect(self.recursiveChanged)
         self.actionlogCheckbox.stateChanged.connect(self.actionlogChanged)
@@ -88,6 +101,7 @@ class UI(QMainWindow):
         self.denyAccess.clicked.connect(self.Deny)
         # --- # Config # --- #
         self.refreshButton.clicked.connect(self.refreshFile)
+        self.saveButton.clicked.connect(self.saveFile)
         self.openConfigButton.clicked.connect(self.editThread)
         # --- # Theming # --- #
         self.selectTheme.clicked.connect(self.selectStylesheet)
@@ -217,6 +231,18 @@ class UI(QMainWindow):
         denyAccess(path)
 
     # GUI handlers #
+    def saveFile(self):
+        toWrite = str(self.configFileBrowser.toPlainText())
+        with open(config_read(), "r") as cfg:
+            current = cfg.read()
+        if toWrite != current:
+            with open(config_read(), "w") as cfg:
+                cfg.write(toWrite)
+            from src.pop import infoMessage, icons
+            infoMessage("Success", "File successfully written", "Config.ini has been successfully updated",
+                        icons("info"))
+        else:
+            actionLogger("No changes were made, skipping...")
     def refreshFile(self):
         with open(config_read(), "r") as cfg:
             self.configFileBrowser.setText(cfg.read())
@@ -259,7 +285,7 @@ class UI(QMainWindow):
         self.messageBox("Successfully removed", "Success", f'Successfully removed file "{ignoreFileName}" from'
                                                            f' the blacklist', QMessageBox.Information)
 
-    # Type handler#
+    # Type handler #
     def addToTypes(self):
         typeSuffixName = self.typesLineEdit.text()
         try:

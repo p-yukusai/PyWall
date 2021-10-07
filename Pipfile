@@ -8,6 +8,7 @@ pyqt5 = "*"
 qt-material = "*"
 context-menu = "*"
 winotify = "*"
+pyqt5custom = "*"
 
 [dev-packages]
 
