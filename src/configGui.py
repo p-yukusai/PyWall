@@ -83,6 +83,10 @@ class UI(QMainWindow):
         self.dropFile.setFixedWidth(625)
         self.dropFile.setFixedHeight(100)
         self.dragGrid.addWidget(self.dropFile)
+        # --- # dropFile doesn't work when launched as Admin for some reason :( # --- #
+        from src.cmdWorker import Admin
+        if Admin():
+            self.dropFile.setDisabled(True)
         # --- # Path # --- #
         self.fileSelect.clicked.connect(self.selectedFile)
         self.folderSelect.clicked.connect(self.selectedFolder)
