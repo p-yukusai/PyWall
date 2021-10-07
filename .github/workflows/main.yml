@@ -23,7 +23,7 @@ jobs:
               pip install winotify
               pip install pyinstaller
               pip install pyqt5Custom
-              pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data "C:\Users\runneradmin\.virtualenvs\PyWall-65-QOBsy\Lib\site-packages\context_menu;context_menu\"
+              pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data "C:\Users\runneradmin\.virtualenvs\PyWall-65-QOBsy\Lib\site-packages\context_menu;context_menu\" --add-data "C:\Users\runneradmin\.virtualenvs\PyWall-65-QOBsy\Lib\site-packages\pyqt5Custom;pyqt5Custom\"
       - name: Zip artifact
         uses: vimtor/action-zip@v1
         with:
