@@ -74,27 +74,22 @@ def path_foreach_in(path):  # A rather telling name, isn't?
 
 
 def denyAccess(path: Path):
-    allFiles = []
-    # And this is what I like to call a double Try incantation! This is unnecessary and just shows bad practice #
-    # and as such is perfect for me -w- #
+    allFiles = None
     try:
-        try:
-            if Path.is_dir(path):
-                actionLogger("Folder detected, proceeding accordingly")
-                allFiles = []
-                for y in path_foreach_in(path):
-                    for z in allowedTypes:
-                        if z in Path(y).suffix and Path(y).stem not in ignoredFiles:
-                            print(Path(y))
-                            allFiles.append(Path(y))
-            elif Path.is_file(path):
-                actionLogger("File detected, proceeding accordingly")
-                if Path(path).stem not in ignoredFiles:
-                    for z in allowedTypes:
-                        if z in Path(path).suffix:
-                            allFiles = [path]
-        except OSError as rareBug:  # Indeed a rare bug with the context menu, I believe for it to be fixed #
-            logException(rareBug)  # but just in case I'll leave this in. #
+        if Path.is_dir(path):
+            actionLogger("Folder detected, proceeding accordingly")
+            allFiles = []
+            for y in path_foreach_in(path):
+                for z in allowedTypes:
+                    if z in Path(y).suffix and Path(y).stem not in ignoredFiles:
+                        print(Path(y))
+                        allFiles.append(Path(y))
+        elif Path.is_file(path):
+            actionLogger("File detected, proceeding accordingly")
+            if Path(path).stem not in ignoredFiles:
+                for z in allowedTypes:
+                    if z in Path(path).suffix:
+                        allFiles = [path]
 
         if allFiles is None or str(allFiles) == "[]":
             pathError(path)
@@ -102,7 +97,6 @@ def denyAccess(path: Path):
 
         for y in allFiles:
             p = Path(y)
-            # Yup, this is all the program really does, about 40 hours of coding just to get this to work 〒▽〒 #
             command = f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked {str(p.stem)}" ' \
                       f'dir=out program="{p}" action=block'
             if Admin():
@@ -111,16 +105,21 @@ def denyAccess(path: Path):
             else:
                 try:
                     icon = icons("critical")
-                    infoMessage("Not Admin", "Missing required elevation", "This task requires elevation, please run "
-                                                                           "as Admin", icon)
+                    infoMessage("Not Admin", "Missing UAC privileges", "This task requires elevation, please run "
+                                                                       "as Admin", icon)
                 except NameError:
                     actionLogger("Commands detected, skipping infoMessage")
                     pass
 
-                # This code gives me a "held together with spit and glue" kinda vibe #
-                args = "".join(sys.argv)
-                fileIndex = args.index("-file=")
-                args = '"' + args[:fileIndex] + '" ' + args[fileIndex:fileIndex + 6] + '"' + args[fileIndex + 6:]
+                try:
+                    args = "".join(sys.argv)
+                    fileIndex = args.index("-file=")
+                    allowIndex = args.index("-allow")
+                    args = '"' + args[:fileIndex] + '" ' + args[fileIndex:fileIndex + 6] + '"' + args[fileIndex + 6:
+                                                                                                      allowIndex] \
+                           + '" ' + "-" + args[allowIndex + 1:allowIndex + 6] + " " + args[allowIndex + 6:]
+                except ValueError:
+                    args = "".join(sys.argv)
                 ctypes.windll.shell32.ShellExecuteW(None, u"runas", sys.executable, args, None, 1)
                 sys.exit("Admin re-run")
 

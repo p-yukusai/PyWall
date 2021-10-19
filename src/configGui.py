@@ -86,7 +86,7 @@ class UI(QMainWindow):
         # --- # dropFile doesn't work when launched as Admin for some reason :( # --- #
         from src.cmdWorker import Admin
         if Admin():
-            self.dropFile.setDisabled(True)
+            self.dropFile.hide()
         # --- # Path # --- #
         self.fileSelect.clicked.connect(self.selectedFile)
         self.folderSelect.clicked.connect(self.selectedFolder)

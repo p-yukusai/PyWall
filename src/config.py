@@ -62,7 +62,7 @@ sets_gui = ["advanced_mode", "stylesheet", "first_run"]
 set_default_gui = ["False", "dark_red.xml", "True"]
 # Debug #
 sets_debug = ["create_logs", "create_exception_logs", "version", "shell"]
-set_default_debug = ["False", "True", "release - v.1.2", "False"]
+set_default_debug = ["False", "True", "v.1.3", "False"]
 # All sets #
 sets = [sets_file, sets_gui, sets_debug]
 sets_default = [set_default_file, set_default_gui, set_default_debug]
