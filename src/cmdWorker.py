@@ -69,6 +69,7 @@ def path_foreach_in(path):  # A rather telling name, isn't?
     else:
         from src.config import modifyConfig
         modifyConfig("FILETYPE", "recursive", "True")
+        filesRecursive = sorted(glob(glob_pattern+r"/**", recursive=True), key=os.path.getctime)
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
     return files
 
