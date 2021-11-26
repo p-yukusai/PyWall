@@ -61,14 +61,15 @@ def path_foreach_in(path):  # A rather telling name, isn't?
     from glob import glob
     glob_pattern = os.path.join(path, '*')
     filesNoRecursive = sorted(glob(glob_pattern), key=os.path.getctime)
-    filesRecursive = sorted(glob(glob_pattern+r"/**", recursive=True), key=os.path.getctime)
     if getConfig("FILETYPE", "recursive") == "True":
+        filesRecursive = sorted(glob(glob_pattern+r"/**", recursive=True), key=os.path.getctime)
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
     elif getConfig("FILETYPE", "recursive") == "False":
         files = filesNoRecursive
     else:
         from src.config import modifyConfig
         modifyConfig("FILETYPE", "recursive", "True")
+        filesRecursive = sorted(glob(glob_pattern+r"/**", recursive=True), key=os.path.getctime)
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
     return files
 
