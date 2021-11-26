@@ -2,6 +2,8 @@ import pathlib
 import sys
 import os
 import configparser
+import time
+
 
 config = configparser.ConfigParser()
 pyWall_Ini = "\\PyWall\\Config.ini"
@@ -52,45 +54,38 @@ def configFile():
         return str(document_folder + pyWall_Ini)
 
 
-# Sections #
-sections = ["FILETYPE", "GUI", "DEBUG"]
-# File #
-sets_file = ["accepted_types", "blacklisted_names", "recursive"]
-set_default_file = [".exe", "", "True"]
-# Gui #
-sets_gui = ["advanced_mode", "stylesheet", "first_run"]
-set_default_gui = ["False", "dark_red.xml", "True"]
-# Debug #
-sets_debug = ["create_logs", "create_exception_logs", "version", "shell"]
-set_default_debug = ["False", "True", "v.1.3", "False"]
-# All sets #
-sets = [sets_file, sets_gui, sets_debug]
-sets_default = [set_default_file, set_default_gui, set_default_debug]
+default_config = {
+    "FILETYPE": {
+        "accepted_types": ".exe",
+        "blacklisted_names": "",
+        "recursive": "True"
+    },
+    "GUI": {
+        "advanced_mode": "False",
+        "stylesheet": "dark_red.xml",
+        "first_run": "True"
+    },
+    "DEBUG": {
+        "create_logs": "False",
+        "create_exception_logs": "True",
+        "version": "v1.4",
+        "shell": "False"
+    }
+}
 
 
-def default():
+def default(default_file=None):
     document_folder = documentFolder()
     config_file = document_folder + pyWall_Ini
-    value_int = 0
-    # This was coded making heavy use of sleep deprivation ( •̀ ω •́ )y #
-    for x in sections:
+    if default_file is None:
+        default_file = default_config
+    for x in default_file.keys():  # Add default sections
         if not config.has_section(x):
             config.add_section(x)
-    for x in range(len(sections)):
-        sec = sections[x]
-        for se in sets[x]:
-            if config.has_option(sec, se):  # Sec(tions), Se(ts) #
-                if len(sets_default[x]) > value_int:
-                    value_int += 1
-                if len(sets_default[x]) == value_int:
-                    value_int = 0
-            if not config.has_option(sec, se):
-                config.set(sec, se, sets_default[x][value_int])
-                if len(sets_default[x]) > value_int:
-                    value_int += 1
-                if len(sets_default[x]) == value_int:
-                    value_int = 0
-    # Write to Config.ini #
+        for y in default_file[x]:  # Add default values
+            if not config.has_option(x, y):
+                config.set(x, y, default_file.get(x, y)[y])
+
     with open(config_file, 'w') as configfile:
         config.write(configfile)
 
@@ -103,40 +98,38 @@ def makeDefault():
     default()
 
 
-def getConfig(Section, Variable, *Index: str):  # Index is a string now, what a weird world we live in (つ ◕_◕ )つ #
+def getConfig(Section, Variable, *extra_args):  # Basically a more robust version of the basic read_ini
     config.read(configFile())
-    if Section == '?':
-        print(sections)
-    if Variable == '?':
-        sect = sections.index(Section)
-        print(sets[sect])
-    if Index:
-        # It do be that way ┑(￣Д ￣)┍ #
+    if extra_args:
         try:
-            indexValue = ''.join(Index)
+            indexValue = ''.join(extra_args)
             value = config[Section][Variable]
             List = value.split(', ')
-            if "len" in Index:
+            if "len" in extra_args:
                 return len(List)
             return List[int(indexValue)]
         except KeyError:
-            print("-" * 50)
-            print(sections)
-            print("-" * 50)
-            print(sets)
-            print("-" * 50)
-            print("だめだね、だめよ、だめなのよ")  # あんたが、好きで好きすぎて　#
+            print("Invalid query")
             return False
 
-    if config.has_option(Section, Variable):
-        return config[Section][Variable]
-    else:
-        if Section or Variable == "?":
-            return False
-        else:
-            # Reminders are important y'know! #
-            print('Either the Section or the Variable does not exist, if you need a reminder put a "?" on either.')
-        return False
+    try:
+        if config.has_option(Section, Variable):
+            return config[Section][Variable]
+    except AttributeError:  # High likelihood of the config file is just being written
+        time.sleep(0.1)
+        config.read(configFile())
+        try:
+            if config.has_option(Section, Variable):
+                return config[Section][Variable]
+        except AttributeError:  # High likelihood of the query item being tampered by the user
+            try:
+                default()
+                config.read(configFile())
+                if config.has_option(Section, Variable):
+                    return config[Section][Variable]
+            except AttributeError as err:  # I have no idea at this point...
+                print(err)
+                raise "git gud"
 
 
 def modifyConfig(Section, Variable, Value):
@@ -235,30 +228,30 @@ def configExists():
         return False
 
 
-def validateConfig():
+def validateConfig(default_file=None):
+    if default_file is None:
+        default_file = default_config
     from src.logger import actionLogger
-    document_folder = documentFolder()
-    if os.path.exists(document_folder + pyWall_Ini):
-        config.read(configFile())
-        print("-" * 50)
-        for x in range(len(sections)):
-            sec = sections[x]
-            for se in sets[x]:
-                if config.has_option(sec, se):
-                    actionLogger(f'"{se}" validated')
+    if configExists():
+        try:
+            config.read(configFile())
+        except configparser.ParsingError:
+            default()
+            time.sleep(0.1)
+        actionLogger("-" * 50)
+        for x in range(len(default_file.keys())):
+            section = list(default_file.keys())[x]
+            for option in default_file[section]:
+                if config.has_option(section, option):
+                    actionLogger(f'"{option}" validated')
                 else:
-                    actionLogger(f'Check failed for "{se}"')
-                    print("-" * 50)
-                    return False
-        print("-" * 50)
+                    actionLogger(f'Check failed for "{option}"')
+                    actionLogger("-" * 50)
+                    default()
+        actionLogger("-" * 50)
         actionLogger("Updating version")
-        modifyConfig("DEBUG", "version", set_default_debug[2])
-        print("-" * 50)
+        modifyConfig("DEBUG", "version", default_file.get("DEBUG", "version")["version"])
+        actionLogger("-" * 50)
         return True
     else:
-        try:
-            makeDefault()
-        except Exception as Argument:
-            from src.logger import logException
-            logException(Argument)
-            return False
+        default()

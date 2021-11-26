@@ -1,12 +1,9 @@
 import pathlib
 import sys
-
-import pyqt5Custom
-
 import src.shellHandler
-from PyQt5.QtWidgets import *
+import PyQt5.QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import *
+from PyQt5.QtCore import Qt
 from PyQt5 import uic
 from pyqt5Custom import DragDropFile
 from qt_material import apply_stylesheet, list_themes
@@ -50,7 +47,7 @@ def returnIcon(exception: bool):
         return pathlib.Path(iconFile)
 
 
-class UI(QMainWindow):
+class UI(PyQt5.QtWidgets.QMainWindow):
     def __init__(self):
         # Init and loading #
         try:
@@ -189,7 +186,7 @@ class UI(QMainWindow):
 
     # Path handler #
     def selectedFile(self):
-        path = QFileDialog.getOpenFileName()[0]
+        path = PyQt5.QtWidgets.QFileDialog.getOpenFileName()[0]
         if pathlib.PureWindowsPath(path).suffix not in getConfig("FILETYPE", "accepted_types"):
             self.pathLineEdit.setText(f'Filetype "{pathlib.PureWindowsPath(path).suffix}"'
                                       f' in file "{pathlib.PureWindowsPath(path).name}" is not an accepted type.')
@@ -200,7 +197,7 @@ class UI(QMainWindow):
         self.pathLineEdit.setText(path)
 
     def selectedFolder(self):
-        path = QFileDialog.getExistingDirectory()
+        path = PyQt5.QtWidgets.QFileDialog.getExistingDirectory()
         actionLogger(f"Path for selected folder is {path}")
         self.pathLineEdit.setText(path)
 
@@ -276,7 +273,7 @@ class UI(QMainWindow):
         if ignoreFileName == "":
             return
         self.messageBox("Successfully added", "Success", f'Successfully added file "{ignoreFileName}" to the blacklist',
-                        QMessageBox.Information)
+                        PyQt5.QtWidgets.QMessageBox.Information)
 
     def removeFromBlacklist(self):
         ignoreFileName = self.blacklistLineEdit.text()
@@ -287,7 +284,7 @@ class UI(QMainWindow):
         if ignoreFileName == "":
             return
         self.messageBox("Successfully removed", "Success", f'Successfully removed file "{ignoreFileName}" from'
-                                                           f' the blacklist', QMessageBox.Information)
+                                                           f' the blacklist', PyQt5.QtWidgets.QMessageBox.Information)
 
     # Type handler #
     def addToTypes(self):
@@ -304,7 +301,7 @@ class UI(QMainWindow):
         if typeSuffixName == "." or "":
             return
         self.messageBox("Successfully added", "Success", f'Successfully added file "{typeSuffixName}" to accepted '
-                                                         f'types', QMessageBox.Information)
+                                                         f'types', PyQt5.QtWidgets.QMessageBox.Information)
 
     def removeFromTypes(self):
         typeSuffixName = self.typesLineEdit.text()
@@ -320,37 +317,37 @@ class UI(QMainWindow):
         if typeSuffixName == "." or "":
             return
         self.messageBox("Successfully removed", "Success", f'Successfully removed file "{typeSuffixName}" from accepted'
-                                                           f' types', QMessageBox.Information)
+                                                           f' types', PyQt5.QtWidgets.QMessageBox.Information)
 
     @staticmethod
-    def messageBox(text: str, title: str, information=None, icon=QMessageBox):
-        msgBox = QMessageBox()
+    def messageBox(text: str, title: str, information=None, icon=PyQt5.QtWidgets.QMessageBox):
+        msgBox = PyQt5.QtWidgets.QMessageBox()
         msgBox.setIcon(icon)
         msgBox.setText(text)
         msgBox.setWindowTitle(title)
         if information is not None:
             msgBox.setInformativeText(information)
-        msgBox.setStandardButtons(QMessageBox.Ok)
+        msgBox.setStandardButtons(PyQt5.QtWidgets.QMessageBox.Ok)
         try:
             msgBox.setWindowIcon(QIcon(iconFile))
         except FileNotFoundError:
             msgBox.setWindowIcon(QIcon(iconFile_exception))
         returnValue = msgBox.exec()
 
-    def questionBoxHardCoded(self, text: str, title: str, information=None, icon=QMessageBox):
-        qBox = QMessageBox()
+    def questionBoxHardCoded(self, text: str, title: str, information=None, icon=PyQt5.QtWidgets.QMessageBox):
+        qBox = PyQt5.QtWidgets.QMessageBox()
         qBox.setIcon(icon)
         qBox.setText(text)
         qBox.setWindowTitle(title)
         if information is not None:
             qBox.setInformativeText(information)
-        qBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        qBox.setStandardButtons(PyQt5.QtWidgets.QMessageBox.Yes | PyQt5.QtWidgets.QMessageBox.No)
         try:
             qBox.setWindowIcon(QIcon(iconFile))
         except FileNotFoundError:
             qBox.setWindowIcon(QIcon(iconFile_exception))
         returnValue = qBox.exec()
-        if returnValue == QMessageBox.Yes:
+        if returnValue == PyQt5.QtWidgets.QMessageBox.Yes:
             self.installShellHandler()
 
 
@@ -361,12 +358,12 @@ def firstRun(self):
                                                                                       "improve the utility of this "
                                                                                       "program? You can always install"
                                                                                       " or uninstall it later.",
-                              QMessageBox.Information)
+                              PyQt5.QtWidgets.QMessageBox.Information)
 
 
 # GUI Bootstrapper #
 def start():
-    app = QApplication(sys.argv)
+    app = PyQt5.QtWidgets.QApplication(sys.argv)
     apply_stylesheet(app, theme=stylesheet)
     window = UI()
     app.exec_()
