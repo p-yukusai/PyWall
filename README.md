@@ -76,6 +76,6 @@ I believe it to be important to remind people of the potential dangers of progra
 ## Special thanks 🚀
 Thanks to JetBrains for the OSS license to further develop PyWall and all other projects! </br>
 <h1 align="center">
-<a href=https://forthebadge.com>
+<a href=https://www.jetbrains.com/opensource/>
   <img alt="JetBrains logo" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg">
 </h1>
