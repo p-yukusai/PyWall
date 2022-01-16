@@ -186,11 +186,11 @@
         },
         "qt-material": {
             "hashes": [
-                "sha256:49affce35e52ac7a93d69b7bb2c8960f30b9982397ee83a4088c20ab7b7b8988",
-                "sha256:8c6b511b389e17b2c82c8c5e5f5297298c175ab099def62eefc7e31b95c36cab"
+                "sha256:0440078277909627be79709e5f77acb66cbc84dec27a7107abc5d8826e2f4598",
+                "sha256:ef2c708dc419adaf3eb804ca9af6ad537edb13c69f22acf88f99b31c8317b593"
             ],
             "index": "pypi",
-            "version": "==2.8.10"
+            "version": "==2.8.19"
         },
         "requests": {
             "hashes": [
