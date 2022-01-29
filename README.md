@@ -73,18 +73,9 @@ You are free to read the code and compile it yourself, and, while the releases a
 ## PSA 🌠
 I believe it to be important to remind people of the potential dangers of programs that interact with the security features of your system, this is why it is so valuable to be able to review what a certain piece software does and doesn't do, as such, please exercise caution with what you install on your system!<br/> If you do not trust a particular piece of software, you can just not install it, use a sandbox or block its internet access to make having it on your system a bit more secure, and, since you're already here, why not use PyWall for the latter? 😉.
  
-## Anything else? 🚀
-Nope! That's all there really is to it. I hope you have some use for this little app!
-## 
-
+## Special thanks 🚀
+Thanks to JetBrains for the OSS license to further develop PyWall and all other projects! </br>
 <h1 align="center">
-<a href=https://forthebadge.com>
-  <img alt="With Love" src="https://forthebadge.com/images/badges/built-with-love.svg">
-</a>
-<a href=https://forthebadge.com>
-  <img alt="With Spaghetti" src="https://forthebadge.com/images/badges/contains-tasty-spaghetti-code.svg">
-</a>
-<a href=https://forthebadge.com>
-    <img alt="With Python" src="https://forthebadge.com/images/badges/made-with-python.svg">
-</a>
+<a href=https://www.jetbrains.com/opensource/>
+  <img alt="JetBrains logo" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg">
 </h1>
