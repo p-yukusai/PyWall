@@ -5,7 +5,6 @@ import PyQt5.QtWidgets
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
-from pyqt5Custom import DragDropFile
 from qt_material import apply_stylesheet, list_themes
 from src.config import getConfig, config_read, modifyConfig, appendConfig, removeConfig
 from src.logger import actionLogger
@@ -76,23 +75,9 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             self.actionlogCheckbox.setChecked(True)
         if getConfig("DEBUG", "create_exception_logs") == "True":
             self.exceptionlogCheckbox.setChecked(True)
-        self.dropFile = DragDropFile()
-        self.dropFile.setFixedWidth(625)
-        self.dropFile.setFixedHeight(100)
-        self.dragGrid.addWidget(self.dropFile)
-        # --- # dropFile doesn't work when launched as Admin for some reason :( # --- #
-        from src.cmdWorker import Admin
-        if Admin():
-            self.dropFile.hide()
         # --- # Path # --- #
         self.fileSelect.clicked.connect(self.selectedFile)
         self.folderSelect.clicked.connect(self.selectedFolder)
-
-        @self.dropFile.fileDropped.connect
-        def slot(file):
-            path = file.path
-            self.pathLineEdit.setText(path)
-
         # --- # ComboBox # --- #
         self.recursiveCheckbox.stateChanged.connect(self.recursiveChanged)
         self.actionlogCheckbox.stateChanged.connect(self.actionlogChanged)
@@ -214,8 +199,8 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             return
 
         actionLogger(f"Attempting to allow internet access to {text}")
-        from src.cmdWorker import allowAccess
-        allowAccess(path)
+        from src.cmdWorker import access_handler
+        access_handler(path, "allow")
 
     def Deny(self):
         text = self.pathLineEdit.text()
@@ -228,8 +213,8 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             actionLogger("Invalid, aborting operation")
             return
         actionLogger(f"Attempting to deny internet access to {text}")
-        from src.cmdWorker import denyAccess
-        denyAccess(path)
+        from src.cmdWorker import access_handler
+        access_handler(path, "block")
 
     # GUI handlers #
     def saveFile(self):

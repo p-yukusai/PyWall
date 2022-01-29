@@ -1,3 +1,4 @@
+import subprocess
 import os
 import sys
 import ctypes
@@ -73,8 +74,7 @@ def path_foreach_in(path):  # A rather telling name, isn't?
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
     return files
 
-
-def denyAccess(path: Path):
+def access_handler(path: Path, action):
     allFiles = None
     try:
         if Path.is_dir(path):
@@ -98,10 +98,17 @@ def denyAccess(path: Path):
 
         for y in allFiles:
             p = Path(y)
-            command = f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked {str(p.stem)}" ' \
-                      f'dir=out program="{p}" action=block'
+            if action == "block":
+                command = f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked {str(p.stem)}" ' \
+                          f'dir=out program="{p}" action=block'
+            elif action == "allow":
+                command = f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked {str(p.stem)}" ' \
+                          f'dir=out program="{p}"'
+            else:
+                return "Invalid action"
+
             if Admin():
-                os.system(f'cmd /c {command}')
+                subprocess.call(f'cmd /c {command}', shell=True)
                 actionLogger(f"Successfully blocked {str(p.stem)}")
             else:
                 try:
@@ -126,73 +133,18 @@ def denyAccess(path: Path):
 
     except Exception as Argument:
         logException(Argument)
-    if len(sys.argv) != 1 or 0:
+    if action == "block":
         toastNotification("Success", f'Internet access successfully denied to\n"{path}"')
-    else:
-        toastNotification("Success", f'Internet access successfully denied to\n"{path}"')
-
-
-def allowAccess(path: Path):
-    allFiles = None
-    try:
-        if Path.is_dir(path):
-            actionLogger("Folder detected, proceeding accordingly")
-            allFiles = []
-            for y in path_foreach_in(path):
-                for z in allowedTypes:
-                    if z in Path(y).suffix and Path(y).stem not in ignoredFiles:
-                        print(Path(y))
-                        allFiles.append(Path(y))
-        elif Path.is_file(path):
-            actionLogger("File detected, proceeding accordingly")
-            if Path(path).stem not in ignoredFiles:
-                for z in allowedTypes:
-                    if z in Path(path).suffix:
-                        allFiles = [path]
-
-        if allFiles is None or str(allFiles) == "[]":
-            pathError(path)
-            return
-
-        for y in allFiles:
-            p = Path(y)
-            command = f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked {str(p.stem)}" ' \
-                      f'dir=out program="{p}"'
-            if Admin():
-                os.system(f'cmd /c {command}')
-                actionLogger(f"Successfully allowed {str(p.stem)}")
-            else:
-                try:
-                    icon = icons("critical")
-                    infoMessage("Not Admin", "Missing UAC privileges", "This task requires elevation, please run "
-                                                                       "as Admin", icon)
-                except NameError:
-                    actionLogger("Commands detected, skipping infoMessage")
-                    pass
-
-                try:
-                    args = "".join(sys.argv)
-                    fileIndex = args.index("-file=")
-                    allowIndex = args.index("-allow")
-                    args = '"' + args[:fileIndex] + '" ' + args[fileIndex:fileIndex + 6] + '"' + args[fileIndex + 6:
-                                                                                                      allowIndex]\
-                           + '" ' + "-" + args[allowIndex + 1:allowIndex + 6] + " " + args[allowIndex + 6:]
-                except ValueError:
-                    args = "".join(sys.argv)
-                ctypes.windll.shell32.ShellExecuteW(None, u"runas", sys.executable, args, None, 1)
-                sys.exit("Admin re-run")
-    except Exception as Argument:
-        logException(Argument)
-    if len(sys.argv) != 1 or 0:
+    elif action == "allow":
         toastNotification("Success", f'Internet access successfully allowed to\n"{path}"')
     else:
-        toastNotification("Success", f'Internet access successfully allowed to\n"{path}"')
+        return "Invalid action"
 
 
 def openConfig():
-    os.system(f'cmd /c @echo off && {configFile()}')
+    subprocess.call(f'cmd /c @echo off && {configFile()}')
 
 
 # For debugging purposes #
 def customCommand(command):
-    os.system(f'cmd /c @echo off & {command}')
+    subprocess.call(f'cmd /c @echo off & {command}')

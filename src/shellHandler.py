@@ -1,10 +1,11 @@
+import subprocess
 import os
 import pathlib
 from context_menu import menus
 
 
-# Having to define stuff anew in this script, since it's technically separate in the context of the shell #
-
+# Having to define stuff anew in this script, since it's technically separate in the context of the shell
+# this means duping already existing code :(
 
 def documentFolder():
     import ctypes.wintypes
@@ -53,18 +54,23 @@ def pyWallScript(folder):
     return pathlib.Path(folder + "//main.py")
 
 
-def allowAccess(filenames, params):
+def getFolder():
     try:
         with open(getScriptFolder(), 'r') as sf:
             folder = sf.read()
+            return folder
     except FileNotFoundError:
         pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
 
+
+def allowAccess(filenames, params):
+    folder = getFolder()
+
     try:
         if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
-            os.system(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow true')
+            subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow true', shell=True)
             # input() #
-            os.system(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow true')
+            subprocess.call(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow true', shell=True)
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -74,17 +80,13 @@ def allowAccess(filenames, params):
 
 
 def denyAccess(filenames, params):
-    try:
-        with open(getScriptFolder(), 'r') as sf:
-            folder = sf.read()
-    except FileNotFoundError:
-        pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
+    folder = getFolder()
 
     try:
         if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
-            os.system(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}"')
+            subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}"', shell=True)
             # input() #
-            os.system(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" ')
+            subprocess.call(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" ', shell=True)
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -108,8 +110,8 @@ def createInternetAccessMenu():
                           menus.ContextCommand('Deny Internet Access', python=denyAccess)])
     IAM_Folder.compile()
 
-    # This is a to bypass a limitation of context_menu, or rather, of the "Run" command. #
-    # In brief, the run command can only be a certain length, so we're removing some of the text from the handler #
+    # This is made to bypass a limitation of context_menu, or rather, of the "Run" command. #
+    # In brief, the run command can only be a certain length, so we're removing some text from the handler #
     # and replacing it with a custom parser in "main.py" #
 
     import winreg
@@ -118,14 +120,20 @@ def createInternetAccessMenu():
     IAM_FILES_DENY = r"Software\Classes\*\shell\PyWall\shell\Deny Internet Access\command"
     IAM_DIR_ALLOW = r"Software\Classes\Directory\shell\PyWall\shell\Allow Internet Access\command"
     IAM_DIR_DENY = r"Software\Classes\Directory\shell\PyWall\shell\Deny Internet Access\command"
+    PYWALL_REG = r"Software\Classes\*\shell\PyWall"
 
     key = winreg.HKEY_CURRENT_USER
     sub_keys = [IAM_FILES_ALLOW, IAM_FILES_DENY, IAM_DIR_ALLOW, IAM_DIR_DENY]
+    PYWALL_KEY = winreg.OpenKey(key, PYWALL_REG, 0, winreg.KEY_ALL_ACCESS)
+    # This key will only work if run from an executable, and not if it is run from source #
+    folder = getFolder()
+    winreg.SetValueEx(PYWALL_KEY, 'Icon', 0, winreg.REG_SZ, str(pyWallPath(folder)) + ",0")
+    PYWALL_KEY.Close()
 
     for x in sub_keys:
         current_sub_key = winreg.QueryValue(key, x)
         argIndex = winreg.QueryValue(key, x).index(" -c ")
-        # About the dumbest way to query for the third semi-colon #
+        # About the dumbest way to query for the third semicolon #
         firstSemi = current_sub_key.find(";")
         secondSemi = current_sub_key.find(";", firstSemi + 1)
         thirdSemi = current_sub_key.find(";", secondSemi + 1)

@@ -62,15 +62,14 @@ if __name__ == '__main__':
                 file_path = pathlib.Path(file)
                 actionLogger(f'Argument "File" is {file}')
                 actionLogger(f'Argument "Allow" is {args.allow}')
+                from src.cmdWorker import access_handler
                 if args.allow:
                     actionLogger(f'Attempting to allow "{file_path.stem}"')
-                    from src.cmdWorker import allowAccess
-                    allowAccess(file_path)
+                    access_handler(file_path, "allow")
                     sys.exit(0)
                 elif not args.allow:
                     actionLogger(f'Attempting to block "{file_path.stem}"')
-                    from src.cmdWorker import denyAccess
-                    denyAccess(file_path)
+                    access_handler(file_path, "block")
                     sys.exit(0)
             except TypeError:
                 actionLogger("No variables were caught")
