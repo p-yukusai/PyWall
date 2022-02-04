@@ -120,15 +120,19 @@ def createInternetAccessMenu():
     IAM_FILES_DENY = r"Software\Classes\*\shell\PyWall\shell\Deny Internet Access\command"
     IAM_DIR_ALLOW = r"Software\Classes\Directory\shell\PyWall\shell\Allow Internet Access\command"
     IAM_DIR_DENY = r"Software\Classes\Directory\shell\PyWall\shell\Deny Internet Access\command"
-    PYWALL_REG = r"Software\Classes\*\shell\PyWall"
+    PYWALL_REG_FILE = r"Software\Classes\*\shell\PyWall"
+    PYWALL_REG_FOLDER = r"Software\Classes\Directory\shell\PyWall"
 
     key = winreg.HKEY_CURRENT_USER
     sub_keys = [IAM_FILES_ALLOW, IAM_FILES_DENY, IAM_DIR_ALLOW, IAM_DIR_DENY]
-    PYWALL_KEY = winreg.OpenKey(key, PYWALL_REG, 0, winreg.KEY_ALL_ACCESS)
     # This key will only work if run from an executable, and not if it is run from source #
     folder = getFolder()
+    PYWALL_KEY = winreg.OpenKey(key, PYWALL_REG_FILE, 0, winreg.KEY_ALL_ACCESS)
     winreg.SetValueEx(PYWALL_KEY, 'Icon', 0, winreg.REG_SZ, str(pyWallPath(folder)) + ",0")
     PYWALL_KEY.Close()
+    PYWALL_FOLDER_KEY = winreg.OpenKey(key, PYWALL_REG_FOLDER, 0, winreg.KEY_ALL_ACCESS)
+    winreg.SetValueEx(PYWALL_FOLDER_KEY, 'Icon', 0, winreg.REG_SZ, str(pyWallPath(folder)) + ",0")
+    PYWALL_FOLDER_KEY.Close()
 
     for x in sub_keys:
         current_sub_key = winreg.QueryValue(key, x)

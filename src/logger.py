@@ -4,7 +4,11 @@ import logging
 
 
 def actionLogger(actionLogged):
-    print(actionLogged)
+    # This ought to fix all errors caused by not unicode characters...hopefully #
+    try:
+        print(str(actionLogged))
+    except UnicodeError:
+        print(str(actionLogged).encode("utf8"))
     try:
         if getConfig("DEBUG", "create_logs") == "True":
             with open('logger.log', 'a') as log:
