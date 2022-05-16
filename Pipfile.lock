@@ -123,11 +123,11 @@
         },
         "qt-material": {
             "hashes": [
-                "sha256:0ca414a45982a6e87fb07f51fbba1891dd693883868ab58288f52e0353f2155b",
-                "sha256:ada8310f84ed2abc99e1b7d3c859333546a23c660f193a1803f457b37ec7f6fc"
+                "sha256:4ead6710b4fa64f94963bf359422e077a032a84ec8c350804ff743d1be7f4657",
+                "sha256:4fc02a9a1946c529b3389f103e807c2f67b898100f9626e1eb8a7cd399ee2cb5"
             ],
             "index": "pypi",
-            "version": "==2.11"
+            "version": "==2.12"
         },
         "winotify": {
             "hashes": [
