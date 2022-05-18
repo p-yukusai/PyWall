@@ -30,6 +30,7 @@ PyWall was heavily inspired by [OneClickFirewall](https://winaero.com/oneclickfi
 This app essentially writes a rule to the [Windows Firewall](#technical-explanation-) to deny access to just about anything, by default only executable files will be taken into consideration; as a consequence of interacting directly with the Firewall, this app requires elevation to properly work.<br /> Pywall does not and cannot allow internet access for apps that have already been blocked by means other than itself, for instance, any custom firewalls, existing rules, WFP, etc.<br/><br />
 
 This program has the ability to block or allow almost any file, it can even do so with entire folders of them (which was the main reason behind its development, since OneClickFirewall lacks the ability to do so 👀), the way it does this is by sorting through the entire folder to look for all files with a [matching type](#parsing), then it will either block or allow all matches, this also scans all sub-folders by default, meaning that *every* folder inside the initial selection will be scanned, so please be careful with what you select!<br /><br />
+PyWall can write and delete both [Inbound and Outbound rules](https://superuser.com/questions/48343/what-are-inbound-and-outbound-rules-for-windows-firewall).
 The code was written (to the best of my ability) with the intent of being read by just about anyone, so go right ahead and look through my spaghetti code by yourself if you want to know how the app works in more detail!
 
 ## Technical explanation 👩‍🔬
@@ -38,13 +39,13 @@ The code was written (to the best of my ability) with the intent of being read b
 PyWall essentially runs a command from an elevated prompt to either add or remove (if it exists) a rule from the Windows Firewall, needless to say, you *need* to have your firewall active to make any practical use of this program, additionally, it uses PyQt5 with qt-material to draw the GUI, winotify to create toast notifications and context_menu, combined with some custom regkey manipulation, to create the context menu.
 
 #### The command:
-The command runs from the src/cmdWorker.py script, and it is as follows:
+The command runs from the [src/cmdWorker.py](https://github.com/p-yukusai/PyWall/blob/master/src/cmdWorker.py) script, and it goes along these lines:
 ```cmd
-@echo off && netsh advfirewall firewall {add/delete} rule name="PyWall blocked {filename}" dir=out program="{file path}" {action=block}
+@echo off && netsh advfirewall firewall add rule name="PyWall blocked {Program Name}" dir={rule type} program="{p}"
 ```
-- echo is turned off to avoid having a bunch of consoles popping up.
+- "@echo off" means that the command line won't show up while running the script.
 - "netsh advfirewall firewall" allows interaction with the rules of the firewall, in the program "Allow Internet Access" will *delete* the rule if it exists and "Deny Internet Access" will *add* it.
-
+- "dir" means the direction of the connection, whether Inbound or Outbound.
 
 #### Parsing:
 What the program does when the user attempts to allow or deny the internet access varies depending on the path detected being either a file or a directory.
