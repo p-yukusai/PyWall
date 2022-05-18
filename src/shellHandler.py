@@ -62,15 +62,13 @@ def getFolder():
     except FileNotFoundError:
         pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
 
-
 def allowAccess(filenames, params):
     folder = getFolder()
-
     try:
         if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
-            subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow true', shell=True)
+            subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow True -rule_type {params}', shell=True)
             # input() #
-            subprocess.call(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow true', shell=True)
+            subprocess.call(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow true -rule_type {params}', shell=True)
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -81,12 +79,11 @@ def allowAccess(filenames, params):
 
 def denyAccess(filenames, params):
     folder = getFolder()
-
     try:
         if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
-            subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}"', shell=True)
+            subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow False-rule_type {params}', shell=True)
             # input() #
-            subprocess.call(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" ', shell=True)
+            subprocess.call(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow False -rule_type {params}', shell=True)
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -101,30 +98,61 @@ def denyAccess(filenames, params):
 
 def createInternetAccessMenu():
     IAM = menus.ContextMenu('PyWall', type='FILES')
-    IAM.add_items([menus.ContextCommand('Allow Internet Access', python=allowAccess),
-                   menus.ContextCommand('Deny Internet Access', python=denyAccess)])
+
+    IAM_ALLOW = menus.ContextMenu('Allow Internet Access')
+    IAM_ALLOW.add_items([
+        menus.ContextCommand("Allow inbound connections", python=allowAccess, params='in'),
+        menus.ContextCommand("Allow outbound connections", python=allowAccess, params="out"),
+        menus.ContextCommand("Allow inbound and outbound connections", python=allowAccess, params="both")
+    ])
+
+    IAM_DENY = menus.ContextMenu('Deny Internet Access')
+    IAM_DENY.add_items([
+        menus.ContextCommand("Deny inbound connections", python=denyAccess, params='in'),
+        menus.ContextCommand("Deny outbound connections", python=denyAccess, params="out"),
+        menus.ContextCommand("Deny inbound and outbound connections", python=denyAccess, params="both")
+    ])
+    IAM.add_items([IAM_ALLOW, IAM_DENY])
     IAM.compile()
 
     IAM_Folder = menus.ContextMenu('PyWall', type='DIRECTORY')
-    IAM_Folder.add_items([menus.ContextCommand('Allow Internet Access', python=allowAccess),
-                          menus.ContextCommand('Deny Internet Access', python=denyAccess)])
+    IAM_Folder.add_items([IAM_ALLOW, IAM_DENY])
     IAM_Folder.compile()
 
-    # This is made to bypass a limitation of context_menu, or rather, of the "Run" command. #
-    # In brief, the run command can only be a certain length, so we're removing some text from the handler #
-    # and replacing it with a custom parser in "main.py" #
+    # The param gets discarded when compiled with PyInstaller, so we need to do some custom registry editing #
 
     import winreg
 
-    IAM_FILES_ALLOW = r"Software\Classes\*\shell\PyWall\shell\Allow Internet Access\command"
-    IAM_FILES_DENY = r"Software\Classes\*\shell\PyWall\shell\Deny Internet Access\command"
-    IAM_DIR_ALLOW = r"Software\Classes\Directory\shell\PyWall\shell\Allow Internet Access\command"
-    IAM_DIR_DENY = r"Software\Classes\Directory\shell\PyWall\shell\Deny Internet Access\command"
+    # Command registry #
+    # Yes, this was just as tedious as you think it was #
+    FILES_ALLOW_BOTH = r"Software\Classes\*\shell\PyWall\shell\Allow Internet Access\shell\Allow inbound " \
+                       r"and outbound connections\command"
+    FILES_ALLOW_IN = r"Software\Classes\*\shell\PyWall\shell\Allow Internet Access\shell\Allow inbound " \
+                     r"connections\command"
+    FILES_ALLOW_OUT = r"Software\Classes\*\shell\PyWall\shell\Allow Internet Access\shell\Allow outbound " \
+                      r"connections\command"
+    FILES_DENY_BOTH = r"Software\Classes\*\shell\PyWall\shell\Deny Internet Access\shell\Deny inbound " \
+                      r"and outbound connections\command"
+    FILES_DENY_IN = r"Software\Classes\*\shell\PyWall\shell\Deny Internet Access\shell\Deny inbound " \
+                    r"connections\command"
+    FILES_DENY_OUT = r"Software\Classes\*\shell\PyWall\shell\Deny Internet Access\shell\Deny outbound " \
+                     r"connections\command"
+    # ---- #
+    DIR_ALLOW_BOTH = FILES_ALLOW_BOTH.replace("*", "Directory")
+    DIR_ALLOW_IN = FILES_ALLOW_IN.replace("*", "Directory")
+    DIR_ALLOW_OUT = FILES_ALLOW_OUT.replace("*", "Directory")
+    DIR_DENY_BOTH = FILES_DENY_BOTH.replace("*", "Directory")
+    DIR_DENY_IN = FILES_DENY_IN.replace("*", "Directory")
+    DIR_DENY_OUT = FILES_DENY_OUT.replace("*", "Directory")
+
+    key = winreg.HKEY_CURRENT_USER
+    sub_keys = [FILES_ALLOW_BOTH, FILES_DENY_BOTH, FILES_ALLOW_IN, FILES_DENY_IN, FILES_ALLOW_OUT, FILES_DENY_OUT,
+                DIR_ALLOW_BOTH, DIR_DENY_BOTH, DIR_ALLOW_IN, DIR_DENY_IN, DIR_ALLOW_OUT, DIR_DENY_OUT]
+
+    # Icon registry #
     PYWALL_REG_FILE = r"Software\Classes\*\shell\PyWall"
     PYWALL_REG_FOLDER = r"Software\Classes\Directory\shell\PyWall"
 
-    key = winreg.HKEY_CURRENT_USER
-    sub_keys = [IAM_FILES_ALLOW, IAM_FILES_DENY, IAM_DIR_ALLOW, IAM_DIR_DENY]
     # This key will only work if run from an executable, and not if it is run from source #
     folder = getFolder()
     PYWALL_KEY = winreg.OpenKey(key, PYWALL_REG_FILE, 0, winreg.KEY_ALL_ACCESS)
@@ -137,22 +165,14 @@ def createInternetAccessMenu():
     for x in sub_keys:
         current_sub_key = winreg.QueryValue(key, x)
         argIndex = winreg.QueryValue(key, x).index(" -c ")
+        current_sub_key = current_sub_key.replace(r"([' '.join(sys.argv[1:]) ],'", ",").replace("')\"", ",\"")
         # About the dumbest way to query for the third semicolon #
         firstSemi = current_sub_key.find(";")
         secondSemi = current_sub_key.find(";", firstSemi + 1)
         thirdSemi = current_sub_key.find(";", secondSemi + 1)
-        if "shellHandler.allowAccess" in current_sub_key:
-            accessIndex = current_sub_key.find("shellHandler.allowAccess") + 24
-        else:
-            accessIndex = current_sub_key.find("shellHandler.denyAccess") + 23
-        quoteIndex = current_sub_key.find('"', thirdSemi)
-        if "python.exe" in current_sub_key[:argIndex]:
-            # This is for testing within the source, as I cannot find another solution to this problem #
-            # if you have one, please push a PR #
-            replacement_sub_key = current_sub_key
-        else:
-            replacement_sub_key = current_sub_key[:argIndex + 4] + current_sub_key[thirdSemi + 1: accessIndex] + \
-                                  current_sub_key[quoteIndex + 1:]
+        # The context menu must be tested with a compiled version of PyWall, otherwise it won't work #
+        # PR's that address this are welcome #
+        replacement_sub_key = current_sub_key[:argIndex + 4] + current_sub_key[thirdSemi + 1:]
         winreg.SetValue(key, x, winreg.REG_SZ, replacement_sub_key)
 
 

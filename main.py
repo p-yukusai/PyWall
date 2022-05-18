@@ -21,58 +21,39 @@ if __name__ == '__main__':
             parser.add_argument("-file", help="The path to the file or folder", type=str)
             parser.add_argument("-allow", help="Action to perform boolean, "
                                                "True will Allow internet access, False will block it.", type=bool)
+            parser.add_argument("-rule_type", help="Argument accepts Inbound, outbound or both", type=str)
             parser.add_argument("-c", help="Shell handler", type=str)
             args, unknown = parser.parse_known_args()  # The program will ignore all unknown arguments, so type well! #
             # Shell handler #
-            if args.c != "" or None:
-                arg_len = len(sys.argv)
+            if args.c is not None:
                 argument = str(args.c)
-                # Allow Internet Access #
-                if "allowAccess" in argument:
-                    from src.shellHandler import allowAccess
-                    actionLogger("Shell action is allowAccess, allowing...")
-                    actionLogger(sys.argv[int(arg_len)-1])
-                    allowAccess(sys.argv[int(arg_len)-1], "")
+                # Access handling #
+                if "allowAccess" or "denyAccess" in argument:
+                    from src.cmdWorker import access_handler
+                    arg = argument.split(",")
+                    if "allowAccess" in arg[0]:
+                        action = "allow"
+                    else:
+                        action = "deny"
+                    actionLogger(f"Shell action is {arg[0]}, filename is {arg[2]}, rule type is {arg[1]}, proceeding...")
+                    access_handler(pathlib.Path(arg[2]), action, arg[1])
                     sys.exit(0)
-                # Deny Internet Access #
-                elif "denyAccess" in argument:
-                    from src.shellHandler import denyAccess
-                    actionLogger("Shell action is denyAccess, blocking...")
-                    actionLogger(sys.argv[int(arg_len)-1])
-                    denyAccess(sys.argv[int(arg_len)-1], "")
-                    sys.exit(0)
-            try:
-                # Filtering, there's probably a more efficient way to do this, and it's probably no longer necessary #
-                toReplace = r"\\"
-                replacement = "\\"
-                if len(sys.argv) != 1 or len(sys.argv) != 0:
-                    try:
-                        if "[" and "]" and "'" in str(args.file):
-                            file = args.file[2:-2].replace(toReplace, replacement)
-                        else:
-                            file = args.replace(toReplace, replacement)
-                    except AttributeError:
-                        if "[" and "]" and "'" in str(args.file):
-                            file = args.file[2:-2]
-                        else:
-                            file = args.file
-                else:
-                    file = args.file[2:-2].replace(toReplace, replacement)
+            if args.file is not None and args.allow is not None and args.rule_type is not None:
                 # Argument handler #
-                file_path = pathlib.Path(file)
-                actionLogger(f'Argument "File" is {file}')
+                file_path = pathlib.Path(str(args.file))
+                actionLogger(f'Argument "File" is {file_path}')
                 actionLogger(f'Argument "Allow" is {args.allow}')
+                actionLogger(f'Argument "Rule type" is {args.rule_type}')
                 from src.cmdWorker import access_handler
+
                 if args.allow:
                     actionLogger(f'Attempting to allow "{file_path.stem}"')
-                    access_handler(file_path, "allow")
+                    access_handler(args.file, "allow", args.rule_type)
                     sys.exit(0)
                 elif not args.allow:
                     actionLogger(f'Attempting to block "{file_path.stem}"')
-                    access_handler(file_path, "block")
+                    access_handler(args.file, "block", args.rule_type)
                     sys.exit(0)
-            except TypeError:
-                actionLogger("No variables were caught")
 
         except argparse.ArgumentTypeError as Argument:
             actionLogger(Argument)

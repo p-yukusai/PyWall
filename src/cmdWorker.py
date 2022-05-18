@@ -2,9 +2,9 @@ import subprocess
 import os
 import sys
 import ctypes
-from pathlib import Path
+import pathlib
 
-if len(sys.argv) != 1 or 0:
+if len(sys.argv) != 1 or len(sys.argv) != 0:
     from src.pop import toastNotification
 else:
     from src.pop import infoMessage, icons, toastNotification
@@ -23,8 +23,8 @@ def Admin():
     return is_admin
 
 
-def pathError(path: Path):
-    if not Path.exists(path):
+def pathError(path: pathlib.Path):
+    if not pathlib.Path.exists(path):
         try:
             icon = icons("critical")
             infoMessage("Path type does not exist", "allTypes is None", "The indicated path does not exist or "
@@ -63,53 +63,86 @@ def path_foreach_in(path):  # A rather telling name, isn't?
     glob_pattern = os.path.join(path, '*')
     filesNoRecursive = sorted(glob(glob_pattern), key=os.path.getctime)
     if getConfig("FILETYPE", "recursive") == "True":
-        filesRecursive = sorted(glob(glob_pattern+r"/**", recursive=True), key=os.path.getctime)
+        filesRecursive = sorted(glob(glob_pattern + r"/**", recursive=True), key=os.path.getctime)
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
     elif getConfig("FILETYPE", "recursive") == "False":
         files = filesNoRecursive
     else:
         from src.config import modifyConfig
         modifyConfig("FILETYPE", "recursive", "True")
-        filesRecursive = sorted(glob(glob_pattern+r"/**", recursive=True), key=os.path.getctime)
+        filesRecursive = sorted(glob(glob_pattern + r"/**", recursive=True), key=os.path.getctime)
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
     return files
 
-def access_handler(path: Path, action):
+def access_handler(path, action, rule_type: str):
     allFiles = None
+
+    if rule_type != "both" and rule_type != "in" and rule_type != "out":
+        from src.shellHandler import pop
+        pop("Rule type is invalid", f"The selected rule type ('{rule_type}') is not valid, please"
+            f"try again", True)
+        return
+
     try:
-        if Path.is_dir(path):
-            actionLogger("Folder detected, proceeding accordingly")
-            allFiles = []
-            for y in path_foreach_in(path):
-                for z in allowedTypes:
-                    if z in Path(y).suffix and Path(y).stem not in ignoredFiles:
-                        print(Path(y))
-                        allFiles.append(Path(y))
-        elif Path.is_file(path):
-            actionLogger("File detected, proceeding accordingly")
-            if Path(path).stem not in ignoredFiles:
-                for z in allowedTypes:
-                    if z in Path(path).suffix:
-                        allFiles = [path]
+        try:
+            # I have NO idea why it adds a random space at the start of the path, this was a headache during
+            # debugging ;w;
+            path = pathlib.Path(str(path).strip())
+            is_dir = bool(path.is_dir())
+            is_file = bool(path.is_file())
+            if is_dir:
+                actionLogger("Folder detected, proceeding accordingly")
+                allFiles = []
+                for y in path_foreach_in(path):
+                    for z in allowedTypes:
+                        if z in pathlib.Path(y).suffix and pathlib.Path(y).stem not in ignoredFiles:
+                            print(pathlib.Path(y))
+                            allFiles.append(pathlib.Path(y))
+            elif is_file:
+                actionLogger("File detected, proceeding accordingly")
+                if pathlib.Path(path).stem not in ignoredFiles:
+                    for z in allowedTypes:
+                        if z in pathlib.Path(path).suffix:
+                            allFiles = [path]
+        except OSError:
+            raise pathError(path)
 
         if allFiles is None or str(allFiles) == "[]":
             pathError(path)
             return
 
         for y in allFiles:
-            p = Path(y)
-            if action == "block":
-                command = f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked {str(p.stem)}" ' \
-                          f'dir=out program="{p}" action=block'
-            elif action == "allow":
-                command = f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked {str(p.stem)}" ' \
-                          f'dir=out program="{p}"'
+            p = pathlib.Path(y)
+            command = False
+            if action == "deny":
+                cmn = "blocked"
+                if rule_type != "both":
+                    command = f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked {str(p.stem)}" ' \
+                              f'dir={rule_type} program="{p}" action=block'
             else:
-                return "Invalid action"
+                cmn = "allowed"
+                if rule_type != "both":
+                    command = f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked {str(p.stem)}" ' \
+                              f'dir={rule_type} program="{p}"'
 
             if Admin():
-                subprocess.call(f'cmd /c {command}', shell=True)
-                actionLogger(f"Successfully blocked {str(p.stem)}")
+                if not command and action == "allow":
+                    first_command = f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked ' \
+                                    f'{str(p.stem)}" dir=out program="{p}"'
+                    second_command = f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked ' \
+                                    f'{str(p.stem)}" dir=in program="{p}"'
+                    subprocess.call(f'cmd /c {first_command}', shell=True)
+                    subprocess.call(f'cmd /c {second_command}', shell=True)
+                elif not command and action == "deny":
+                    first_command = f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked ' \
+                                    f'{str(p.stem)}" dir=out program="{p}" action=block'
+                    second_command = f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked ' \
+                                     f'{str(p.stem)}" dir=in program="{p}" action=block'
+                    subprocess.call(f'cmd /c {first_command}', shell=True)
+                    subprocess.call(f'cmd /c {second_command}', shell=True)
+                else:
+                    subprocess.call(f'cmd /c {command}', shell=True)
+                actionLogger(f"Successfully {cmn} {str(p.stem)}")
             else:
                 try:
                     icon = icons("critical")
@@ -118,22 +151,14 @@ def access_handler(path: Path, action):
                 except NameError:
                     actionLogger("Commands detected, skipping infoMessage")
                     pass
-
-                try:
-                    args = "".join(sys.argv)
-                    fileIndex = args.index("-file=")
-                    allowIndex = args.index("-allow")
-                    args = '"' + args[:fileIndex] + '" ' + args[fileIndex:fileIndex + 6] + '"' + args[fileIndex + 6:
-                                                                                                      allowIndex] \
-                           + '" ' + "-" + args[allowIndex + 1:allowIndex + 6] + " " + args[allowIndex + 6:]
-                except ValueError:
-                    args = "".join(sys.argv)
+                args = "".join(sys.argv)
                 ctypes.windll.shell32.ShellExecuteW(None, u"runas", sys.executable, args, None, 1)
                 sys.exit("Admin re-run")
 
     except Exception as Argument:
         logException(Argument)
-    if action == "block":
+        raise Argument
+    if action == "deny":
         toastNotification("Success", f'Internet access successfully denied to\n"{path}"')
     elif action == "allow":
         toastNotification("Success", f'Internet access successfully allowed to\n"{path}"')
@@ -143,8 +168,3 @@ def access_handler(path: Path, action):
 
 def openConfig():
     subprocess.call(f'cmd /c @echo off && {configFile()}')
-
-
-# For debugging purposes #
-def customCommand(command):
-    subprocess.call(f'cmd /c @echo off & {command}')

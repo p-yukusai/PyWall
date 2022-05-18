@@ -83,8 +83,10 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         self.actionlogCheckbox.stateChanged.connect(self.actionlogChanged)
         self.exceptionlogCheckbox.stateChanged.connect(self.exceptionlogChanged)
         # --- # Access # --- #
-        self.allowAccess.clicked.connect(self.Allow)
-        self.denyAccess.clicked.connect(self.Deny)
+        self.allowAccess.clicked.connect(lambda: self.internet_handler("allow"))
+        self.denyAccess.clicked.connect(lambda: self.internet_handler("deny"))
+        # --- # Rule Type # --- #
+        self.outbound_check.setChecked(True)
         # --- # Config # --- #
         self.refreshButton.clicked.connect(self.refreshFile)
         self.saveButton.clicked.connect(self.saveFile)
@@ -187,34 +189,36 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         self.pathLineEdit.setText(path)
 
     # Internet access handler #
-    def Allow(self):
+    def internet_handler(self, state):
+        inbound = True if self.inbound_check.checkState() == 2 else False
+        outbound = True if self.outbound_check.checkState() == 2 else False
+        if not inbound and not outbound:
+            self.pathLineEdit.setText("Please select one or more rule types before proceeding")
+            return
+
+        rule = "both" if inbound and outbound else "in" if inbound else "out"
         text = self.pathLineEdit.text()
+        if text.startswith('"') and text.endswith('"'):
+            text = text[1:text.__len__()-1]
         path = pathlib.Path(text)
         try:
-            if text is None or not path.exists() or text == '':
+            if text == "debug":
+                pass
+            elif text is None or not path.exists() or text == '':
                 actionLogger("No valid path has been detected, aborting operation")
                 return
         except OSError:
             actionLogger("Invalid, aborting operation")
             return
 
-        actionLogger(f"Attempting to allow internet access to {text}")
-        from src.cmdWorker import access_handler
-        access_handler(path, "allow")
-
-    def Deny(self):
-        text = self.pathLineEdit.text()
-        path = pathlib.Path(text)
-        try:
-            if text is None or not path.exists() or text == '':
-                actionLogger("No valid path has been detected, aborting operation")
-                return
-        except OSError:
-            actionLogger("Invalid, aborting operation")
-            return
-        actionLogger(f"Attempting to deny internet access to {text}")
-        from src.cmdWorker import access_handler
-        access_handler(path, "block")
+        if state == "allow":
+            actionLogger(f"Attempting to allow internet access to {text}")
+            from src.cmdWorker import access_handler
+            access_handler(path, "allow", rule)
+        elif state == "deny":
+            actionLogger(f"Attempting to deny internet access to {text}")
+            from src.cmdWorker import access_handler
+            access_handler(path, "deny", rule)
 
     # GUI handlers #
     def saveFile(self):
@@ -229,6 +233,7 @@ class UI(PyQt5.QtWidgets.QMainWindow):
                         icons("info"))
         else:
             actionLogger("No changes were made, skipping...")
+
     def refreshFile(self):
         with open(config_read(), "r") as cfg:
             self.configFileBrowser.setText(cfg.read())
