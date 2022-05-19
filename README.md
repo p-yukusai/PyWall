@@ -6,7 +6,7 @@
 </h1>
 
 <p align="center">
-    A small app to make it easy to administrate simple firewall configurations.
+    A simple app that makes firewall rules easy.
 </p>
 
 <h1 align="center">
