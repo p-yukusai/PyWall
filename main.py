@@ -31,12 +31,13 @@ if __name__ == '__main__':
                 if "allowAccess" or "denyAccess" in argument:
                     from src.cmdWorker import access_handler
                     arg = argument.split(",")
+                    file = sys.argv[3]
                     if "allowAccess" in arg[0]:
                         action = "allow"
                     else:
                         action = "deny"
-                    actionLogger(f"Shell action is {arg[0]}, filename is {arg[2]}, rule type is {arg[1]}, proceeding...")
-                    access_handler(pathlib.Path(arg[2]), action, arg[1])
+                    actionLogger(f"Shell action is {arg[0]}, filename is {file}, rule type is {arg[1]}, proceeding...")
+                    access_handler(pathlib.Path(file), action, arg[1])
                     sys.exit(0)
             if args.file is not None and args.allow is not None and args.rule_type is not None:
                 # Argument handler #

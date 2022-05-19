@@ -165,7 +165,7 @@ def createInternetAccessMenu():
     for x in sub_keys:
         current_sub_key = winreg.QueryValue(key, x)
         argIndex = winreg.QueryValue(key, x).index(" -c ")
-        current_sub_key = current_sub_key.replace(r"([' '.join(sys.argv[1:]) ],'", ",").replace("')\"", ",\"")
+        current_sub_key = current_sub_key.replace(r"([' '.join(sys.argv[1:]) ],'", ",").replace("')\"", ",")
         # About the dumbest way to query for the third semicolon #
         firstSemi = current_sub_key.find(";")
         secondSemi = current_sub_key.find(";", firstSemi + 1)
