@@ -20,10 +20,13 @@ def getScriptFolder():
     document_folder = documentFolder()
     return document_folder + "\\PyWall\\Executable.txt"
 
-
 try:
     with open(getScriptFolder(), 'r') as sf:
         folder = sf.read()
+        if pathlib.Path(folder).exists():
+            pass
+        else:
+            raise FileNotFoundError
 except FileNotFoundError:
     from src.config import scriptFolder
 
