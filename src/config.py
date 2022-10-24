@@ -33,7 +33,13 @@ def scriptFolder():
             path = os.path.abspath(".")
     document_folder = documentFolder()
     if pathlib.Path.is_file(pathlib.Path(document_folder + PyWall + "\\Executable.txt")):
-        pass
+        with open(document_folder + PyWall + "\\Executable.txt", 'r') as exe:
+            executable = exe.read()
+            if executable == os.getcwd():
+                pass
+            else:
+                with open(document_folder + PyWall + "\\Executable.txt", 'w') as e:
+                    e.write(os.getcwd())
     else:
         with open(document_folder + PyWall + "\\Executable.txt", 'w') as exe:
             exe.write(os.getcwd())
