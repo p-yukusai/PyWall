@@ -74,7 +74,7 @@ default_config = {
     "DEBUG": {
         "create_logs": "False",
         "create_exception_logs": "True",
-        "version": "v1.7",
+        "version": "v1.7.2",
         "shell": "False"
     }
 }
@@ -103,7 +103,7 @@ def makeDefault():
         if not os.path.exists(config_folder):
             os.makedirs(config_folder)
         default()
-    except:
+    except FileNotFoundError:
         document_folder = "C:\\Users\\Public\\Documents" # This should be available on every Windows install
         config_folder = document_folder + PyWall
         if not os.path.exists(config_folder):
