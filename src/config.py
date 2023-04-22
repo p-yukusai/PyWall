@@ -97,12 +97,18 @@ def default(default_file=None):
 
 
 def makeDefault():
-    document_folder = documentFolder()
-    config_folder = document_folder + PyWall
-    if not os.path.exists(config_folder):
-        os.makedirs(config_folder)
-    default()
-
+    try:
+        document_folder = documentFolder()
+        config_folder = document_folder + PyWall
+        if not os.path.exists(config_folder):
+            os.makedirs(config_folder)
+        default()
+    except:
+        document_folder = "C:\\Users\\Public\\Documents" # This should be available on every Windows install
+        config_folder = document_folder + PyWall
+        if not os.path.exists(config_folder):
+            os.makedirs(config_folder)
+        default()
 
 def getConfig(Section, Variable, *extra_args):  # Basically a more robust version of the basic read_ini
     config.read(configFile())
