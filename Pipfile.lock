@@ -18,12 +18,12 @@
     "default": {
         "context-menu": {
             "hashes": [
-                "sha256:170b552fecc5e5efa5b7e2524e3ab76564645110b9bccc71122510005310956b",
-                "sha256:e11c7a4cf81f59fd853e3f202ec2619e4ed3d7411e5b81aca95219ac093ec63e"
+                "sha256:478a1b104b105260ea3deb53c1473b277fe11af4ac6cbcfd9d64abfb6cc94daa",
+                "sha256:47d49c46a9638ab46090787019cdba5e8285862f1487da702a70ffdd82280f6b"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.7'",
-            "version": "==1.4.0"
+            "version": "==1.4.1"
         },
         "jinja2": {
             "hashes": [
