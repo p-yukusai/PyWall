@@ -1,7 +1,5 @@
 import pathlib
 import sys
-from sys import exception
-
 import src.shellHandler
 import PyQt5.QtWidgets
 from PyQt5.QtGui import QIcon
