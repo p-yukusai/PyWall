@@ -1,12 +1,14 @@
 import pathlib
 import sys
+from sys import exception
+
 import src.shellHandler
 import PyQt5.QtWidgets
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
 from qt_material import apply_stylesheet, list_themes
-from src.config import getConfig, config_read, modifyConfig, appendConfig, removeConfig
+from src.config import getConfig, config_read, modifyConfig, appendConfig, removeConfig, default
 from src.logger import actionLogger
 
 uiFile = 'src/ui/configGui.ui'
@@ -357,6 +359,16 @@ def firstRun(self):
 # GUI Bootstrapper #
 def start():
     app = PyQt5.QtWidgets.QApplication(sys.argv)
-    apply_stylesheet(app, theme=stylesheet)
+    try:
+        apply_stylesheet(app, theme=stylesheet)
+    except ValueError:
+        default()
+        sheet = getConfig("GUI", "stylesheet")
+        try:
+            apply_stylesheet(app, theme=sheet)
+        except ValueError:
+            actionLogger("Unable to apply stylesheet, ignoring...")
+            pass
+
     window = UI()
     app.exec_()
