@@ -62,7 +62,10 @@ if __name__ == '__main__':
 
         # GUI Bootstrap #
         from src.configGui import start
-        start()
+        try:
+            start()
+        except ValueError:
+            start(True)
 
     except Exception as Critical:
         logException("bypass", Critical)

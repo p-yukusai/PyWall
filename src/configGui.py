@@ -68,10 +68,13 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         for x in allThemes:
             theme_string.append((x.replace(".xml", "").replace("_", " ")).title())
         self.themeComboBox.addItems(theme_string)
-        current_theme = getConfig("GUI", "stylesheet")
-        current_theme_index = allThemes.index(current_theme)
-        current_string = theme_string[current_theme_index]
-        self.themeComboBox.setCurrentText(current_string)
+        try:
+            current_theme = getConfig("GUI", "stylesheet")
+            current_theme_index = allThemes.index(current_theme)
+            current_string = theme_string[current_theme_index]
+            self.themeComboBox.setCurrentText(current_string)
+        except ValueError:
+            self.themeComboBox.setCurrentText("Themes unavailable")
         if getConfig("FILETYPE", "recursive") == "True":
             self.recursiveCheckbox.setChecked(True)
         if getConfig("DEBUG", "create_logs") == "True":
@@ -355,18 +358,19 @@ def firstRun(self):
 
 
 # GUI Bootstrapper #
-def start():
+def start(bypass_stylesheet = False):
     app = PyQt5.QtWidgets.QApplication(sys.argv)
-    try:
-        apply_stylesheet(app, theme=stylesheet)
-    except ValueError:
-        default()
-        sheet = getConfig("GUI", "stylesheet")
+    if not bypass_stylesheet:
         try:
-            apply_stylesheet(app, theme=sheet)
+            apply_stylesheet(app, theme=stylesheet)
         except ValueError:
-            actionLogger("Unable to apply stylesheet, ignoring...")
-            pass
+            default()
+            sheet = getConfig("GUI", "stylesheet")
+            try:
+                apply_stylesheet(app, theme=sheet)
+            except ValueError:
+                actionLogger("Unable to apply stylesheet, ignoring...")
+                pass
 
     window = UI()
     app.exec_()

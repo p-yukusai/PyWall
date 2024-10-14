@@ -74,7 +74,7 @@ default_config = {
     "DEBUG": {
         "create_logs": "False",
         "create_exception_logs": "True",
-        "version": "v1.7.2",
+        "version": "v1.7.3",
         "shell": "False"
     }
 }
