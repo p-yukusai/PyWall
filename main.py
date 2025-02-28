@@ -1,19 +1,18 @@
 import pathlib
 import sys
+from src.logger import logException, actionLogger  # Moved to the top
+from src.config import configExists, validateConfig, makeDefault
+import argparse
 
 if __name__ == '__main__':
-    from src.logger import logException
     try:
         # Verify config file #
-        from src.config import configExists, validateConfig, makeDefault
         if not configExists():
             makeDefault()
         if not validateConfig():
             makeDefault()
         # Argument parser #
         try:
-            from src.logger import actionLogger
-            import argparse
             parser = argparse.ArgumentParser(description='PyWall is a small app to make it easy to administrate '
                                                          'simple firewall configurations, giving or revoking internet '
                                                          'access to certain applications.')
@@ -28,7 +27,8 @@ if __name__ == '__main__':
             if args.c is not None:
                 argument = str(args.c)
                 # Access handling #
-                if "allowAccess" or "denyAccess" in argument:
+                # FIX: Corrected the logical condition that was always evaluating to True
+                if "allowAccess" in argument or "denyAccess" in argument:
                     from src.cmdWorker import access_handler
                     arg = argument.split(",")
                     file = sys.argv[3]
@@ -49,16 +49,15 @@ if __name__ == '__main__':
 
                 if args.allow:
                     actionLogger(f'Attempting to allow "{file_path.stem}"')
-                    access_handler(args.file, "allow", args.rule_type)
+                    access_handler(file_path, "allow", args.rule_type)
                     sys.exit(0)
                 elif not args.allow:
                     actionLogger(f'Attempting to block "{file_path.stem}"')
-                    access_handler(args.file, "block", args.rule_type)
+                    access_handler(file_path, "block", args.rule_type)
                     sys.exit(0)
 
         except argparse.ArgumentTypeError as Argument:
             actionLogger(Argument)
-            pass
 
         # GUI Bootstrap #
         from src.configGui import start
@@ -67,7 +66,12 @@ if __name__ == '__main__':
         except ValueError:
             start(True)
 
-    except Exception as Critical:
+    # Fix: Replacing the generic Exception with more specific exceptions
+    except (ImportError, FileNotFoundError, PermissionError) as Critical:
         logException("bypass", Critical)
+    # If you still need a fallback for truly unexpected errors, use a specific name
+    except Exception as Critical:  # Catching any other unexpected exceptions
+        logException("unexpected_error", Critical)
+        raise  # Re-raise the exception after logging it
 
 # Thanks for taking the time to read this script, you nerd \(￣︶￣*\)) #

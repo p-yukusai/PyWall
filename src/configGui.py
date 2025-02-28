@@ -152,30 +152,21 @@ class UI(PyQt5.QtWidgets.QMainWindow):
 
     # Checkboxes #
     def recursiveChanged(self, state):
-        if Qt.Checked == state:
-            self.recursiveCheckbox.setChecked(True)
-            modifyConfig("FILETYPE", "recursive", "True")
-        else:
-
-            self.recursiveCheckbox.setChecked(False)
-            modifyConfig("FILETYPE", "recursive", "False")
+        self.updateCheckboxState(self.recursiveCheckbox, state, "FILETYPE", "recursive")
 
     def actionlogChanged(self, state):
-        if Qt.Checked == state:
-            self.actionlogCheckbox.setChecked(True)
-            modifyConfig("DEBUG", "create_logs", "True")
-        else:
-            self.actionlogCheckbox.setChecked(False)
-            modifyConfig("DEBUG", "create_logs", "False")
+        self.updateCheckboxState(self.actionlogCheckbox, state, "DEBUG", "create_logs")
 
     def exceptionlogChanged(self, state):
-        if Qt.Checked == state:
-            self.exceptionlogCheckbox.setChecked(True)
-            modifyConfig("DEBUG", "create_exception_logs", "True")
-        else:
+        self.updateCheckboxState(self.exceptionlogCheckbox, state, "DEBUG", "create_exception_logs")
 
-            self.exceptionlogCheckbox.setChecked(False)
-            modifyConfig("DEBUG", "create_exception_logs", "False")
+    def updateCheckboxState(self, checkbox, state, section, key):
+        if Qt.Checked == state:
+            checkbox.setChecked(True)
+            modifyConfig(section, key, "True")
+        else:
+            checkbox.setChecked(False)
+            modifyConfig(section, key, "False")
 
     # Path handler #
     def selectedFile(self):
@@ -261,43 +252,53 @@ class UI(PyQt5.QtWidgets.QMainWindow):
 
     # Blacklist handler #
     def addToBlacklist(self):
-        ignoreFileName = self.blacklistLineEdit.text()
-        if len(ignoreFileName) == 0:
+        ignoreFileName = self.blacklistLineEdit.text().strip()
+        if not ignoreFileName:
             return False
+
         actionLogger("Adding to filename blacklist...")
-        actionLogger(appendConfig("FILETYPE", "blacklisted_names", [ignoreFileName]))
-        if ignoreFileName == "":
-            return
-        self.messageBox("Successfully added", "Success", f'Successfully added file "{ignoreFileName}" to the blacklist',
-                        PyQt5.QtWidgets.QMessageBox.Information)
+        success = appendConfig("FILETYPE", "blacklisted_names", [ignoreFileName])
+        actionLogger(success)
+
+        if success:
+            self.messageBox("Successfully added", "Success", f'Successfully added file "{ignoreFileName}" to the blacklist', PyQt5.QtWidgets.QMessageBox.Information)
+        else:
+            self.messageBox("Addition failed", "Error", f'Failed to add file "{ignoreFileName}" to the blacklist', PyQt5.QtWidgets.QMessageBox.Critical)
 
     def removeFromBlacklist(self):
-        ignoreFileName = self.blacklistLineEdit.text()
-        if len(ignoreFileName) == 0:
+        ignoreFileName = self.blacklistLineEdit.text().strip()
+        if not ignoreFileName:
             return False
+
         actionLogger("Removing item from filename blacklist...")
-        actionLogger(removeConfig("FILETYPE", "blacklisted_names", [ignoreFileName]))
-        if ignoreFileName == "":
-            return
-        self.messageBox("Successfully removed", "Success", f'Successfully removed file "{ignoreFileName}" from'
-                                                           f' the blacklist', PyQt5.QtWidgets.QMessageBox.Information)
+        success = removeConfig("FILETYPE", "blacklisted_names", [ignoreFileName])
+        actionLogger(success)
+
+        if success:
+            self.messageBox("Successfully removed", "Success", f'Successfully removed file "{ignoreFileName}" from the blacklist', PyQt5.QtWidgets.QMessageBox.Information)
+        else:
+            self.messageBox("Removal failed", "Error", f'Failed to remove file "{ignoreFileName}" from the blacklist', PyQt5.QtWidgets.QMessageBox.Critical)
 
     # Type handler #
     def addToTypes(self):
-        typeSuffixName = self.typesLineEdit.text()
-        try:
-            if typeSuffixName[0] != ".":
-                typeSuffixName = "." + typeSuffixName
-        except IndexError:
+        typeSuffixName = self.typesLineEdit.text().strip()
+        if not typeSuffixName:
             return False
+
+        if not typeSuffixName.startswith("."):
+            typeSuffixName = "." + typeSuffixName
+
         if typeSuffixName == ".":
             return False
+
         actionLogger("Adding suffix to accepted types...")
-        actionLogger(appendConfig("FILETYPE", "accepted_types", [typeSuffixName]))
-        if typeSuffixName == "." or "":
-            return
-        self.messageBox("Successfully added", "Success", f'Successfully added file "{typeSuffixName}" to accepted '
-                                                         f'types', PyQt5.QtWidgets.QMessageBox.Information)
+        success = appendConfig("FILETYPE", "accepted_types", [typeSuffixName])
+        actionLogger(success)
+
+        if success:
+            self.messageBox("Successfully added", "Success", f'Successfully added file "{typeSuffixName}" to accepted types', PyQt5.QtWidgets.QMessageBox.Information)
+        else:
+            self.messageBox("Addition failed", "Error", f'Failed to add file "{typeSuffixName}" to accepted types', PyQt5.QtWidgets.QMessageBox.Critical)
 
     def removeFromTypes(self):
         typeSuffixName = self.typesLineEdit.text()

@@ -14,9 +14,11 @@ def infoMessage(text: str, title: str, information: str, icon: QMessageBox):
 
 
 def icons(icon):
-    if icon == "info" or "Info" or "INFO" or "information" or "Information" or "INFORMATION":  # Options! #
+    if icon in ["info", "Info", "INFO", "information", "Information", "INFORMATION"]:
         return QMessageBox.Information
-    elif icon == "critical" or "Critical" or "CRITICAL":
+    elif icon in ["critical", "Critical", "CRITICAL"]:
         return QMessageBox.Critical
-    elif icon == "warning" or "Warning" or "WARNING":
+    elif icon in ["warning", "Warning", "WARNING"]:
         return QMessageBox.Warning
+    else:
+        return QMessageBox.NoIcon

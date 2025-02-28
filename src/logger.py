@@ -20,17 +20,23 @@ def actionLogger(actionLogged):
 
 def logException(Argument, *Critical):
     if Argument == "bypass":
-        number = 0
-        logNameBool = exists(f"errorLogCritical{number}.log")
-        while logNameBool:
-            number += 1
-            logNameBool = exists(f"errorLogCritical{number}.log")
-        logName = f"errorLogCritical{number}.log"
-        logging.basicConfig(filename=logName, filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-        logging.exception(f'Runtime error is "{Critical}", see full traceback bellow: \n ', exc_info=True)
-        actionLogger(f'Exception logged, runtime error is "{Critical}"')
-        raise Exception(Critical)
+        logCriticalException(Critical)
+    else:
+        logStandardException(Critical)
 
+def logCriticalException(Critical):
+    number = 0
+    logNameBool = exists(f"errorLogCritical{number}.log")
+    while logNameBool:
+        number += 1
+        logNameBool = exists(f"errorLogCritical{number}.log")
+    logName = f"errorLogCritical{number}.log"
+    logging.basicConfig(filename=logName, filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.exception(f'Runtime error is "{Critical}", see full traceback below: \n ', exc_info=True)
+    actionLogger(f'Exception logged, runtime error is "{Critical}"')
+    raise Exception(Critical)
+
+def logStandardException(Critical):
     try:
         if getConfig("DEBUG", "create_exception_logs") == "True":
             number = 0
@@ -38,12 +44,16 @@ def logException(Argument, *Critical):
             while logNameBool:
                 number += 1
                 logNameBool = exists(f"errorLog{number}.log")
-
             logName = f"errorLog{number}.log"
             logging.basicConfig(filename=logName, filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-            logging.exception(f'Runtime error is "{Argument}", see full traceback bellow: \n ', exc_info=True)
-            actionLogger(f'Exception logged, runtime error is "{Argument}"')
-        else:
-            pass
-    except Exception as Critical:
-        logException("bypass", Critical)
+            logging.exception(f'Runtime error is "{Critical}", see full traceback below: \n ', exc_info=True)
+            actionLogger(f'Exception logged, runtime error is "{Critical}"')
+    except Exception as e:
+        actionLogger(f'Failed to log exception: {e}')
+
+
+def enableLogging(enable: bool):
+    if enable:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.disable(logging.CRITICAL)

@@ -98,20 +98,8 @@ def denyAccess(filenames, params):
 
 def createInternetAccessMenu():
     IAM = menus.ContextMenu('PyWall', type='FILES')
-
-    IAM_ALLOW = menus.ContextMenu('Allow Internet Access')
-    IAM_ALLOW.add_items([
-        menus.ContextCommand("Allow inbound connections", python=allowAccess, params='in'),
-        menus.ContextCommand("Allow outbound connections", python=allowAccess, params="out"),
-        menus.ContextCommand("Allow inbound and outbound connections", python=allowAccess, params="both")
-    ])
-
-    IAM_DENY = menus.ContextMenu('Deny Internet Access')
-    IAM_DENY.add_items([
-        menus.ContextCommand("Deny inbound connections", python=denyAccess, params='in'),
-        menus.ContextCommand("Deny outbound connections", python=denyAccess, params="out"),
-        menus.ContextCommand("Deny inbound and outbound connections", python=denyAccess, params="both")
-    ])
+    IAM_ALLOW = createAllowMenu()
+    IAM_DENY = createDenyMenu()
     IAM.add_items([IAM_ALLOW, IAM_DENY])
     IAM.compile()
 
@@ -119,10 +107,28 @@ def createInternetAccessMenu():
     IAM_Folder.add_items([IAM_ALLOW, IAM_DENY])
     IAM_Folder.compile()
 
-    # The param gets discarded when compiled with PyInstaller, so we need to do some custom registry editing #
+    updateRegistry()
 
+def createAllowMenu():
+    IAM_ALLOW = menus.ContextMenu('Allow Internet Access')
+    IAM_ALLOW.add_items([
+        menus.ContextCommand("Allow inbound connections", python=allowAccess, params='in'),
+        menus.ContextCommand("Allow outbound connections", python=allowAccess, params="out"),
+        menus.ContextCommand("Allow inbound and outbound connections", python=allowAccess, params="both")
+    ])
+    return IAM_ALLOW
+
+def createDenyMenu():
+    IAM_DENY = menus.ContextMenu('Deny Internet Access')
+    IAM_DENY.add_items([
+        menus.ContextCommand("Deny inbound connections", python=denyAccess, params='in'),
+        menus.ContextCommand("Deny outbound connections", python=denyAccess, params="out"),
+        menus.ContextCommand("Deny inbound and outbound connections", python=denyAccess, params="both")
+    ])
+    return IAM_DENY
+
+def updateRegistry():
     import winreg
-
     # Command registry #
     # Yes, this was just as tedious as you think it was #
     FILES_ALLOW_BOTH = r"Software\Classes\*\shell\PyWall\shell\Allow Internet Access\shell\Allow inbound " \
