@@ -21,6 +21,42 @@
 </a>
 </h1>
 
+# PyWall
+
+PyWall is a Python-based firewall application. This tool helps manage network traffic by filtering incoming and outgoing connections based on configurable rules.
+
+## Features
+
+- Configure firewall rules
+- Monitor network traffic
+- Block or allow connections based on IP, port, or application
+- User-friendly interface
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/PyWall.git
+cd PyWall
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+## Usage
+
+```bash
+python main.py
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
 ## What is it? 🔐
 
 This is a small application, written in Python and Qt, that makes it easy to block or allow internet access to certain files or folders, it contains a graphical user interface and a shell extension, so you may choose between the benefits of an easy-to-use GUI app with the efficiency of just right-clicking any folder or file for maximum convenience! <br />

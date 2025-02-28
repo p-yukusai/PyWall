@@ -155,103 +155,19 @@ def validate_config(default_file=None):
     """
     Validate the configuration file.
     """
+    import time
+    config = configparser.ConfigParser()
+
     if default_file is None:
         default_file = default_config
+
     if config_exists():
-        config = configparser.ConfigParser()
         try:
             config.read(config_file())
         except configparser.ParsingError:
             make_default()
-    parser = configparser.ConfigParser()
-    parser.read(config_file())
-    current = parser.get(section, variable)
-    if parser.has_option(section, variable):
-        if "," in current:
-            all_values = current.split(", ")
-        else:
-            all_values = [current]
-
-        for x in value:
-            for z in all_values:
-                if x == z:
-                    actionLogger(f'Value "{x}" already in list, skipping...')
-                    return False
-
-            if "," not in str(current) and str(all_values) == "['']":
-                all_values = [x]
-            else:
-                all_values.append(x)
-        # Strip might be unnecessary now, but I don't wanna take it away due to a bug that happened while debugging ;w;#
-        all_values = [x.strip() for x in all_values]
-        all_values = ", ".join(all_values)
-        parser.set(section, variable, all_values)
-        with open(config_file, 'w', encoding='utf-8') as f:
-            parser.write(f)
-            return True
-    return False
-        if "," in current:
-            allValues = current.split(", ")
-def remove_config(section, variable, value: list):
-    """
-    Remove a value from a configuration list.
-    """
-    document_folder = document_folder()
-    config_file = document_folder + PYWALL_INI
-    parser = configparser.ConfigParser()
-    parser.read(config_file())
-    before_parse = parser.get(section, variable)
-    if parser.has_option(section, variable):
-        current = parser.get(section, variable)
-        if current == "":
-            return False
-        for x in value:
-            skip = False
-            if x.strip() not in current and len(value) == 1:
-                return False
-            if x.strip() not in current:
-                actionLogger(f'Value "{x}" not found in current variable, skipping...')
-                skip = True
-            if not skip:
-                if "," in current:
-                    all_values = current.split(", ")
-                else:
-                    all_values = [current]
-                for z in all_values:
-                    if z == x.strip():
-                        all_values.remove(z)
-            all_values = [x.strip() for x in all_values]
-            all_values = ", ".join(all_values)
-            parser.set(section, variable, all_values)
-            current = parser.get(section, variable)
-        if current == before_parse:
-            return False
-
-        with open(config_file, 'w', encoding='utf-8') as f:
-            parser.write(f)
-            return True
-    return False
-                return False
-def config_exists():
-    """
-    Check if the configuration file exists.
-    """
-    document_folder = document_folder()
-    return os.path.exists(document_folder + PYWALL_INI)
-                    allValues = current.split(", ")
-                else:
-def validate_config(default_file=None):
-    """
-    Validate the configuration file.
-    """
-    if default_file is None:
-        default_file = default_config
-    if config_exists():
-        try:
-            config.read(config_file())
-        except configparser.ParsingError:
-            default()
             time.sleep(0.1)
+
         actionLogger("-" * 50)
         for x in range(len(default_file.keys())):
             section = list(default_file.keys())[x]
@@ -261,36 +177,12 @@ def validate_config(default_file=None):
                 else:
                     actionLogger(f'Check failed for "{option}"')
                     actionLogger("-" * 50)
-                    default()
+                    make_default()
         actionLogger("-" * 50)
         actionLogger("Updating version")
-        modify_config("DEBUG", "version", default_file.get("DEBUG", "version")["version"])
+        modify_config("DEBUG", "version", default_file["DEBUG"]["version"])
         actionLogger("-" * 50)
         return True
-    default()
-    if default_file is None:
-        default_file = default_config
-    from src.logger import actionLogger
-    if configExists():
-        try:
-            config.read(configFile())
-        except configparser.ParsingError:
-            default()
-            time.sleep(0.1)
-        actionLogger("-" * 50)
-        for x in range(len(default_file.keys())):
-            section = list(default_file.keys())[x]
-            for option in default_file[section]:
-                if config.has_option(section, option):
-                    actionLogger(f'"{option}" validated')
-                else:
-                    actionLogger(f'Check failed for "{option}"')
-                    actionLogger("-" * 50)
-                    default()
-        actionLogger("-" * 50)
-        actionLogger("Updating version")
-        modifyConfig("DEBUG", "version", default_file.get("DEBUG", "version")["version"])
-        actionLogger("-" * 50)
-        return True
-    else:
-        default()
+
+    make_default()
+    return True

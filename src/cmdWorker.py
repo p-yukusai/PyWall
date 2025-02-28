@@ -7,7 +7,6 @@ import os
 import sys
 import ctypes
 import pathlib
-from main import Argument
 from src.pop import toastNotification, infoMessage, icons
 from src.logger import actionLogger, logException
 from src.config import getConfig, configFile
@@ -125,68 +124,69 @@ def access_handler(path, action, rule_type: str):
         path_error(path)
         return
 
-    for y in allFiles:
-        p = pathlib.Path(y)
-        command = False
-        if action == "deny":
-            cmn = "blocked"
-            if rule_type != "both":
-                command = (
-                    f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked {str(p.stem)}" '
-                    f'dir={rule_type} program="{p}" action=block'
-                )
-        else:
-            cmn = "allowed"
-            if rule_type != "both":
-                command = (
-                    f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked {str(p.stem)}" '
-                    f'dir={rule_type} program="{p}"'
-                )
-
-        if admin():
-            if not command and action == "allow":
-                first_command = (
-                    f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked '
-                    f'{str(p.stem)}" dir=out program="{p}"'
-                )
-                second_command = (
-                    f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked '
-                    f'{str(p.stem)}" dir=in program="{p}"'
-                )
-                subprocess.call(f'cmd /c {first_command}', shell=True)
-                subprocess.call(f'cmd /c {second_command}', shell=True)
-            elif not command and action == "deny":
-                first_command = (
-                    f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked '
-                    f'{str(p.stem)}" dir=out program="{p}" action=block'
-                )
-                second_command = (
-                    f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked '
-                    f'{str(p.stem)}" dir=in program="{p}" action=block'
-                )
-                subprocess.call(f'cmd /c {first_command}', shell=True)
-                subprocess.call(f'cmd /c {second_command}', shell=True)
+    try:
+        for y in allFiles:
+            p = pathlib.Path(y)
+            command = False
+            if action == "deny":
+                cmn = "blocked"
+                if rule_type != "both":
+                    command = (
+                        f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked {str(p.stem)}" '
+                        f'dir={rule_type} program="{p}" action=block'
+                    )
             else:
-                subprocess.call(f'cmd /c {command}', shell=True)
-            actionLogger(f"Successfully {cmn} {str(p.stem)}")
-        else:
-            try:
-                icon = icons("critical")
-                infoMessage(
-                    "Not Admin",
-                    "Missing UAC privileges",
-                    "This task requires elevation, please run as Admin",
-                    icon
-                )
-            except NameError:
-                actionLogger("Commands detected, skipping infoMessage")
-                pass
-            args = " ".join(sys.argv)  # Fixed bug: Changed from "".join(sys.argv) to " ".join(sys.argv)
-            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, None, 1)
-        sys.exit("Admin re-run")
+                cmn = "allowed"
+                if rule_type != "both":
+                    command = (
+                        f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked {str(p.stem)}" '
+                        f'dir={rule_type} program="{p}"'
+                    )
+
+            if admin():
+                if not command and action == "allow":
+                    first_command = (
+                        f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked '
+                        f'{str(p.stem)}" dir=out program="{p}"'
+                    )
+                    second_command = (
+                        f'@echo off && netsh advfirewall firewall delete rule name="PyWall blocked '
+                        f'{str(p.stem)}" dir=in program="{p}"'
+                    )
+                    subprocess.call(f'cmd /c {first_command}', shell=True)
+                    subprocess.call(f'cmd /c {second_command}', shell=True)
+                elif not command and action == "deny":
+                    first_command = (
+                        f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked '
+                        f'{str(p.stem)}" dir=out program="{p}" action=block'
+                    )
+                    second_command = (
+                        f'@echo off && netsh advfirewall firewall add rule name="PyWall blocked '
+                        f'{str(p.stem)}" dir=in program="{p}" action=block'
+                    )
+                    subprocess.call(f'cmd /c {first_command}', shell=True)
+                    subprocess.call(f'cmd /c {second_command}', shell=True)
+                else:
+                    subprocess.call(f'cmd /c {command}', shell=True)
+                actionLogger(f"Successfully {cmn} {str(p.stem)}")
+            else:
+                try:
+                    icon = icons("critical")
+                    infoMessage(
+                        "Not Admin",
+                        "Missing UAC privileges",
+                        "This task requires elevation, please run as Admin",
+                        icon
+                    )
+                except NameError:
+                    actionLogger("Commands detected, skipping infoMessage")
+                    pass
+                args = " ".join(sys.argv)  # Fixed bug: Changed from "".join(sys.argv) to " ".join(sys.argv)
+                ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, None, 1)
+            sys.exit("Admin re-run")
 
     except Exception as argument:
-        logException(Argument)
+        logException(argument)  # Fixed: Changed from Argument to argument
         raise
 
     if action == "deny":
@@ -199,13 +199,3 @@ def access_handler(path, action, rule_type: str):
 
 def open_config():
     subprocess.call(f'cmd /c @echo off && {configFile()}')
-
-try:
-    from src.cmdWorker import access_handler
-except SyntaxError:
-    # Log error or provide fallback
-    print("Error importing access_handler: Syntax error in cmdWorker.py (line 188)")
-    access_handler = None  # Provide a fallback or placeholder if needed
-except ImportError:
-    print("Could not import access_handler from src.cmdWorker")
-    access_handler = None
