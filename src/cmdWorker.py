@@ -199,3 +199,13 @@ def access_handler(path, action, rule_type: str):
 
 def open_config():
     subprocess.call(f'cmd /c @echo off && {configFile()}')
+
+try:
+    from src.cmdWorker import access_handler
+except SyntaxError:
+    # Log error or provide fallback
+    print("Error importing access_handler: Syntax error in cmdWorker.py (line 188)")
+    access_handler = None  # Provide a fallback or placeholder if needed
+except ImportError:
+    print("Could not import access_handler from src.cmdWorker")
+    access_handler = None
