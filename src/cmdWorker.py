@@ -9,7 +9,7 @@ import ctypes
 import pathlib
 from src.pop import toastNotification, infoMessage, icons
 from src.logger import actionLogger, logException
-from src.config import getConfig, configFile
+from src.config import getConfig, config_file as configFile
 
 ignoredFiles = getConfig("FILETYPE", "blacklisted_names").split(",")
 
@@ -67,8 +67,13 @@ def path_error(path: pathlib.Path):
         return
 
 
-allowedTypeLen = getConfig("FILETYPE", "accepted_types", "len")
-allowedTypes = [getConfig("FILETYPE", "accepted_types", str(x)) for x in range(allowedTypeLen)]
+def get_allowed_types():
+    allowed_types_str = getConfig("FILETYPE", "accepted_types")
+    if not allowed_types_str:
+        return []
+    return [t.strip() for t in allowed_types_str.split(",")]
+
+allowedTypes = get_allowed_types()
 
 
 def path_foreach_in(path):  # A rather telling name, isn't?

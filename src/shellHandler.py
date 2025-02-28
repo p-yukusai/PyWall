@@ -2,18 +2,12 @@ import subprocess
 import os
 import pathlib
 from context_menu import menus
+from src.config import getConfig, documentFolder
+from src.pop import infoMessage, icons
 
 
 # Having to define stuff anew in this script, since it's technically separate in the context of the shell
 # this means duping already existing code :(
-
-def documentFolder():
-    import ctypes.wintypes
-    doc = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
-    ctypes.windll.shell32.SHGetFolderPathW(None, 5, None, 0, doc)
-    document_folder = doc.value
-    return document_folder
-
 
 def getScriptFolder():
     document_folder = documentFolder()
@@ -81,7 +75,7 @@ def denyAccess(filenames, params):
     folder = getFolder()
     try:
         if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
-            subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow False-rule_type {params}', shell=True)
+            subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow False -rule_type {params}', shell=True)
             # input() #
             subprocess.call(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow False -rule_type {params}', shell=True)
             # input() #

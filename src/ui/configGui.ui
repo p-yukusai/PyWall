@@ -289,7 +289,7 @@
            </font>
           </property>
           <property name="toolTip">
-           <string>Regulates outgoing collections. 
+           <string>Regulates outgoing collections.
 For example: Firefox connecting to the internet</string>
           </property>
           <property name="text">
@@ -309,7 +309,7 @@ For example: Firefox connecting to the internet</string>
            </font>
           </property>
           <property name="toolTip">
-           <string>Regulates incoming collections. 
+           <string>Regulates incoming collections.
 For example: Nextcloud server connections</string>
           </property>
           <property name="text">
