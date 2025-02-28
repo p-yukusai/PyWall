@@ -73,3 +73,25 @@ You are free to read the code and compile it yourself, and, while the releases a
 
 ## PSA 🌠
 I believe it to be important to remind people of the potential dangers of programs that interact with the security features of your system, this is why it is so valuable to be able to review what a certain piece software does and doesn't do, as such, please exercise caution with what you install on your system!<br/> If you do not trust a particular piece of software, you can just not install it, use a sandbox or block its internet access to make having it on your system a bit more secure, and, since you're already here, why not use PyWall for the latter? 😉.
+
+## Installation Instructions 📥
+
+To install PyWall, follow these steps:
+
+1. Download the latest release from the [releases page](https://github.com/p-yukusai/PyWall/releases).
+2. Run the installer and follow the on-screen instructions.
+3. Once installed, you can launch PyWall from the Start menu or by right-clicking on a file or folder and selecting the appropriate option.
+
+## Usage Instructions 📘
+
+To use PyWall, follow these steps:
+
+1. Launch PyWall from the Start menu or by right-clicking on a file or folder and selecting the appropriate option.
+2. In the PyWall interface, you can choose to allow or deny internet access to a file or folder.
+3. You can also configure the application settings, such as the accepted file types and blacklisted names, from the settings menu.
+
+## Additional Details 📚
+
+PyWall is an open-source project, and contributions are welcome. If you encounter any issues or have suggestions for improvements, please open an issue on the [GitHub repository](https://github.com/p-yukusai/PyWall/issues).
+
+For more information about the project, including the source code and documentation, visit the [GitHub repository](https://github.com/p-yukusai/PyWall).

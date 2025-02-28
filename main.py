@@ -2,7 +2,7 @@ import pathlib
 import sys
 
 if __name__ == '__main__':
-    from src.logger import logException
+    from src.logger import logException, actionLogger
     try:
         # Verify config file #
         from src.config import configExists, validateConfig, makeDefault
@@ -12,7 +12,6 @@ if __name__ == '__main__':
             makeDefault()
         # Argument parser #
         try:
-            from src.logger import actionLogger
             import argparse
             parser = argparse.ArgumentParser(description='PyWall is a small app to make it easy to administrate '
                                                          'simple firewall configurations, giving or revoking internet '
@@ -55,6 +54,10 @@ if __name__ == '__main__':
                     actionLogger(f'Attempting to block "{file_path.stem}"')
                     access_handler(args.file, "block", args.rule_type)
                     sys.exit(0)
+            else:
+                actionLogger("Missing required arguments: -file, -allow, -rule_type")
+                print("Error: Missing required arguments: -file, -allow, -rule_type")
+                sys.exit(1)
 
         except argparse.ArgumentTypeError as Argument:
             actionLogger(Argument)
@@ -66,6 +69,8 @@ if __name__ == '__main__':
             start()
         except ValueError:
             start(True)
+
+        actionLogger("Main function executed successfully")
 
     except Exception as Critical:
         logException("bypass", Critical)

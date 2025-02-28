@@ -2,21 +2,31 @@ from os.path import exists
 from src.config import getConfig
 import logging
 
+def setup_logger(name, log_file, level=logging.INFO):
+    handler = logging.FileHandler(log_file)        
+    handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
+
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    logger.addHandler(handler)
+
+    return logger
+
+action_logger = setup_logger('action_logger', 'action.log')
+exception_logger = setup_logger('exception_logger', 'exception.log', level=logging.ERROR)
 
 def actionLogger(actionLogged):
-    # This ought to fix all errors caused by not unicode characters...hopefully #
     try:
         print(str(actionLogged))
     except UnicodeError:
         print(str(actionLogged).encode("utf8"))
     try:
         if getConfig("DEBUG", "create_logs") == "True":
-            with open('logger.log', 'a') as log:
-                log.write(actionLogged + '\n')
+            action_logger.info(actionLogged)
     except Exception as Argument:
         print("Something went really wrong, due to this incident no logs have been created, see full traceback: "
               f"{Argument}")
-
+    print("Action logged successfully")
 
 def logException(Argument, *Critical):
     if Argument == "bypass":
@@ -47,3 +57,4 @@ def logException(Argument, *Critical):
             pass
     except Exception as Critical:
         logException("bypass", Critical)
+    print("Exception logged successfully")

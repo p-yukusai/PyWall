@@ -2,7 +2,7 @@ import subprocess
 import os
 import pathlib
 from context_menu import menus
-
+from src.config import profile_function
 
 # Having to define stuff anew in this script, since it's technically separate in the context of the shell
 # this means duping already existing code :(
@@ -14,11 +14,9 @@ def documentFolder():
     document_folder = doc.value
     return document_folder
 
-
 def getScriptFolder():
     document_folder = documentFolder()
     return document_folder + "\\PyWall\\Executable.txt"
-
 
 # Making the messagebox in Qt saves space in the executable, otherwise we would have the good old Tkinter bloat #
 def pop(title, text, close: bool):
@@ -44,15 +42,12 @@ def pop(title, text, close: bool):
 
     window()
 
-
 # The "open" command is repeated because I'm too lazy to define it and then just call it later, code redundancy go brr #
 def pyWallPath(folder):
     return pathlib.Path(folder + "//PyWall.exe")
 
-
 def pyWallScript(folder):
     return pathlib.Path(folder + "//main.py")
-
 
 def getFolder():
     try:
@@ -62,6 +57,7 @@ def getFolder():
     except FileNotFoundError:
         pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
 
+@profile_function
 def allowAccess(filenames, params):
     folder = getFolder()
     try:
@@ -76,7 +72,7 @@ def allowAccess(filenames, params):
     except FileNotFoundError:
         pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
 
-
+@profile_function
 def denyAccess(filenames, params):
     folder = getFolder()
     try:
@@ -90,7 +86,6 @@ def denyAccess(filenames, params):
             pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
     except FileNotFoundError:
         pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
-
 
 # This creates the context menu, It is important to do this for FILES and for DIRECTORY so that the user can right #
 # click on either. The keys created are in "HKEY_CURRENT_USER\Software\Classes\*\shell\" for FILES and in #
@@ -174,7 +169,6 @@ def createInternetAccessMenu():
         # PR's that address this are welcome #
         replacement_sub_key = current_sub_key[:argIndex + 4] + current_sub_key[thirdSemi + 1:]
         winreg.SetValue(key, x, winreg.REG_SZ, replacement_sub_key)
-
 
 def removeInternetAccessMenu():
     menus.removeMenu('PyWall', type='FILES')

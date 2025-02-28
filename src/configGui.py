@@ -8,6 +8,7 @@ from PyQt5 import uic
 from qt_material import apply_stylesheet, list_themes
 from src.config import getConfig, config_read, modifyConfig, appendConfig, removeConfig, default
 from src.logger import actionLogger
+from src.config import profile_function
 
 uiFile = 'src/ui/configGui.ui'
 iconFile = 'img/PyWall.png'
@@ -358,6 +359,7 @@ def firstRun(self):
 
 
 # GUI Bootstrapper #
+@profile_function
 def start(bypass_stylesheet = False):
     app = PyQt5.QtWidgets.QApplication(sys.argv)
     if not bypass_stylesheet:
