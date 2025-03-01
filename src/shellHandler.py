@@ -56,13 +56,14 @@ def getFolder():
     except FileNotFoundError:
         pop("PyWall.exe not found", "Could not find PyWall, please open the program and try again.", True)
 
+
 def allowAccess(filenames, params):
     folder = getFolder()
     try:
         if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
             subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow True -rule_type {params}', shell=True)
             # input() #
-            subprocess.call(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow true -rule_type {params}', shell=True)
+            subprocess.call(f'cmd /c cd {folder} && python {folder}\\main.py -file="{filenames}" -allow true -rule_type {params}', shell=True)
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -77,7 +78,7 @@ def denyAccess(filenames, params):
         if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
             subprocess.call(f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow False -rule_type {params}', shell=True)
             # input() #
-            subprocess.call(f'cmd /c cd {folder} && python {folder}\main.py -file="{filenames}" -allow False -rule_type {params}', shell=True)
+            subprocess.call(f'cmd /c cd {folder} && python {folder}\\main.py -file="{filenames}" -allow False -rule_type {params}', shell=True)
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -103,6 +104,7 @@ def createInternetAccessMenu():
 
     updateRegistry()
 
+
 def createAllowMenu():
     IAM_ALLOW = menus.ContextMenu('Allow Internet Access')
     IAM_ALLOW.add_items([
@@ -112,6 +114,7 @@ def createAllowMenu():
     ])
     return IAM_ALLOW
 
+
 def createDenyMenu():
     IAM_DENY = menus.ContextMenu('Deny Internet Access')
     IAM_DENY.add_items([
@@ -120,6 +123,7 @@ def createDenyMenu():
         menus.ContextCommand("Deny inbound and outbound connections", python=denyAccess, params="both")
     ])
     return IAM_DENY
+
 
 def updateRegistry():
     import winreg
@@ -146,8 +150,10 @@ def updateRegistry():
     DIR_DENY_OUT = FILES_DENY_OUT.replace("*", "Directory")
 
     key = winreg.HKEY_CURRENT_USER
-    sub_keys = [FILES_ALLOW_BOTH, FILES_DENY_BOTH, FILES_ALLOW_IN, FILES_DENY_IN, FILES_ALLOW_OUT, FILES_DENY_OUT,
-                DIR_ALLOW_BOTH, DIR_DENY_BOTH, DIR_ALLOW_IN, DIR_DENY_IN, DIR_ALLOW_OUT, DIR_DENY_OUT]
+    sub_keys = [
+        FILES_ALLOW_BOTH, FILES_DENY_BOTH, FILES_ALLOW_IN, FILES_DENY_IN, FILES_ALLOW_OUT, FILES_DENY_OUT,
+        DIR_ALLOW_BOTH, DIR_DENY_BOTH, DIR_ALLOW_IN, DIR_DENY_IN, DIR_ALLOW_OUT, DIR_DENY_OUT
+    ]
 
     # Icon registry #
     PYWALL_REG_FILE = r"Software\Classes\*\shell\PyWall"

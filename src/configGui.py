@@ -13,12 +13,12 @@ uiFile = 'src/ui/configGui.ui'
 iconFile = 'img/PyWall.png'
 
 
-# About the most roundabout way to write the folder where the exe/code is kept #
-
 def getScriptFolder():
+    """Get the folder where the executable/script information is stored"""
     from src.config import documentFolder
     document_folder = documentFolder()
     return document_folder + "\\PyWall\\Executable.txt"
+
 
 try:
     with open(getScriptFolder(), 'r') as sf:
@@ -34,7 +34,6 @@ except FileNotFoundError:
     with open(getScriptFolder(), 'r') as sf:
         folder = sf.read()
 
-# I would bleach my eyes if I were you, that was awful #
 
 uiFile_exception = folder + "//" + uiFile
 iconFile_exception = folder + "//" + iconFile
@@ -43,6 +42,7 @@ allThemes = list_themes()
 
 
 def returnIcon(exception: bool):
+    """Return the path to the icon file based on context"""
     if exception:
         return pathlib.Path(iconFile_exception)
     else:
@@ -60,13 +60,18 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             super(UI, self).__init__()
             self.main = uic.loadUi(uiFile_exception, self)
             self.setWindowIcon(QIcon(iconFile_exception))
+
         # Defaults #
         with open(config_read(), "r") as cfg:
             self.configFileBrowser.setText(cfg.read())
+
         self.versionLabel.setText(f"Version: {getConfig('DEBUG', 'version')}")
+
+        # Theme handling
         theme_string = []
         for x in allThemes:
             theme_string.append((x.replace(".xml", "").replace("_", " ")).title())
+
         self.themeComboBox.addItems(theme_string)
         try:
             current_theme = getConfig("GUI", "stylesheet")
@@ -75,82 +80,99 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             self.themeComboBox.setCurrentText(current_string)
         except ValueError:
             self.themeComboBox.setCurrentText("Themes unavailable")
+
+        # Set checkbox states from config
         if getConfig("FILETYPE", "recursive") == "True":
             self.recursiveCheckbox.setChecked(True)
         if getConfig("DEBUG", "create_logs") == "True":
             self.actionlogCheckbox.setChecked(True)
         if getConfig("DEBUG", "create_exception_logs") == "True":
             self.exceptionlogCheckbox.setChecked(True)
-        # --- # Path # --- #
+
+        # Connect signals to slots
+        # Path buttons
         self.fileSelect.clicked.connect(self.selectedFile)
         self.folderSelect.clicked.connect(self.selectedFolder)
-        # --- # ComboBox # --- #
+
+        # Checkboxes
         self.recursiveCheckbox.stateChanged.connect(self.recursiveChanged)
         self.actionlogCheckbox.stateChanged.connect(self.actionlogChanged)
         self.exceptionlogCheckbox.stateChanged.connect(self.exceptionlogChanged)
-        # --- # Access # --- #
+
+        # Access buttons
         self.allowAccess.clicked.connect(lambda: self.internet_handler("allow"))
         self.denyAccess.clicked.connect(lambda: self.internet_handler("deny"))
-        # --- # Rule Type # --- #
+
+        # Rule type default
         self.outbound_check.setChecked(True)
-        # --- # Config # --- #
+
+        # Config buttons
         self.refreshButton.clicked.connect(self.refreshFile)
         self.saveButton.clicked.connect(self.saveFile)
         self.openConfigButton.clicked.connect(self.editThread)
-        # --- # Theming # --- #
+
+        # Theme button
         self.selectTheme.clicked.connect(self.selectStylesheet)
-        # --- # Blacklist # --- #
+
+        # Blacklist buttons
         self.addBlacklist.clicked.connect(self.addToBlacklist)
         self.removeBlacklist.clicked.connect(self.removeFromBlacklist)
-        # --- # Types # --- #
+
+        # Types buttons
         self.addTypes.clicked.connect(self.addToTypes)
         self.removeTypes.clicked.connect(self.removeFromTypes)
-        # --- # Shell # --- #
+
+        # Shell buttons
         self.installShell.clicked.connect(self.installShellHandler)
         self.removeShell.clicked.connect(self.removeShellHandler)
-        # --- # First run # --- #
+
+        # First run check
         first_time = getConfig("GUI", "first_run")
         if first_time == "True":
             firstRun(self=UI)
             modifyConfig("GUI", "first_run", "False")
-        # Show self #
+
+        # Show self
         self.show()
 
-    # Shell #
+    # Shell handlers
     @staticmethod
     def installShellHandler():
+        """Install the shell context menu handler"""
         from src.pop import infoMessage, icons
         if getConfig("DEBUG", "shell") == "True":
             icon = icons("warning")
-            message = "It seems that you have already installed the shell handler, if you believe this is a mistake " \
-                      'please press open the config file and edit the "shell" variable from "True" to "False" and try' \
-                      ' again.'
+            message = ("It seems that you have already installed the shell handler, if you believe this is a mistake "
+                      'please press open the config file and edit the "shell" variable from "True" to "False" and try'
+                      ' again.')
             infoMessage("Already installed", "Shell handler has already been created", message, icon)
             return False
+
         src.shellHandler.createInternetAccessMenu()
         icon = icons("info")
-        infoMessage("Shell handler successfully created.", "Successfully added", "You may now see the PyWall when right"
-                                                                                 "-clicking a file or a folder.", icon)
+        infoMessage("Shell handler successfully created.", "Successfully added",
+                   "You may now see the PyWall when right-clicking a file or a folder.", icon)
         modifyConfig("DEBUG", "shell", "True")
 
     @staticmethod
     def removeShellHandler():
+        """Remove the shell context menu handler"""
         from src.pop import infoMessage, icons
         if getConfig("DEBUG", "shell") == "False":
             icon = icons("warning")
-            message = "The shell handler has either never been installed or has already been uninstalled, if you " \
-                      'believe this to be a mistake, please open the config file and edit the "shell" variable from ' \
-                      '"False" to "True" and try again.'
+            message = ("The shell handler has either never been installed or has already been uninstalled, if you "
+                      'believe this to be a mistake, please open the config file and edit the "shell" variable from '
+                      '"False" to "True" and try again.')
             infoMessage("Not installed", "Shell handler has not yet been installed", message, icon)
             return False
+
         src.shellHandler.removeInternetAccessMenu()
         icon = icons("info")
-        infoMessage("Shell handler successfully removed.", "Successfully removed", "The PyWall option will no longer be"
-                                                                                   " available when right-clicking a "
-                                                                                   "file or a folder", icon)
+        infoMessage("Shell handler successfully removed.", "Successfully removed",
+                   "The PyWall option will no longer be available when right-clicking a file or a folder", icon)
         modifyConfig("DEBUG", "shell", "False")
 
-    # Checkboxes #
+    # Checkbox handlers
     def recursiveChanged(self, state):
         self.updateCheckboxState(self.recursiveCheckbox, state, "FILETYPE", "recursive")
 
@@ -161,6 +183,7 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         self.updateCheckboxState(self.exceptionlogCheckbox, state, "DEBUG", "create_exception_logs")
 
     def updateCheckboxState(self, checkbox, state, section, key):
+        """Update a checkbox state and corresponding config value"""
         if Qt.Checked == state:
             checkbox.setChecked(True)
             modifyConfig(section, key, "True")
@@ -168,35 +191,52 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             checkbox.setChecked(False)
             modifyConfig(section, key, "False")
 
-    # Path handler #
+    # Path selection handlers
     def selectedFile(self):
+        """Handle file selection via dialog"""
         path = PyQt5.QtWidgets.QFileDialog.getOpenFileName()[0]
-        if pathlib.PureWindowsPath(path).suffix not in getConfig("FILETYPE", "accepted_types"):
-            self.pathLineEdit.setText(f'Filetype "{pathlib.PureWindowsPath(path).suffix}"'
-                                      f' in file "{pathlib.PureWindowsPath(path).name}" is not an accepted type.')
-            actionLogger(f'Filetype not accepted, suffix for selected file'
-                         f' is "{pathlib.PureWindowsPath(path).suffix}"')
+        if not path:
             return
+
+        if pathlib.PureWindowsPath(path).suffix not in getConfig("FILETYPE", "accepted_types"):
+            self.pathLineEdit.setText(
+                f'Filetype "{pathlib.PureWindowsPath(path).suffix}" '
+                f'in file "{pathlib.PureWindowsPath(path).name}" is not an accepted type.'
+            )
+            actionLogger(
+                f'Filetype not accepted, suffix for selected file '
+                f'is "{pathlib.PureWindowsPath(path).suffix}"'
+            )
+            return
+
         actionLogger(f"Path for selected file is {path}")
         self.pathLineEdit.setText(path)
 
     def selectedFolder(self):
+        """Handle folder selection via dialog"""
         path = PyQt5.QtWidgets.QFileDialog.getExistingDirectory()
+        if not path:
+            return
+
         actionLogger(f"Path for selected folder is {path}")
         self.pathLineEdit.setText(path)
 
-    # Internet access handler #
+    # Internet access handlers
     def internet_handler(self, state):
+        """Handle allowing or denying internet access"""
         inbound = True if self.inbound_check.checkState() == 2 else False
         outbound = True if self.outbound_check.checkState() == 2 else False
+
         if not inbound and not outbound:
             self.pathLineEdit.setText("Please select one or more rule types before proceeding")
             return
 
         rule = "both" if inbound and outbound else "in" if inbound else "out"
         text = self.pathLineEdit.text()
+
         if text.startswith('"') and text.endswith('"'):
             text = text[1:text.__len__()-1]
+
         path = pathlib.Path(text)
         try:
             if text == "debug":
@@ -217,41 +257,52 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             from src.cmdWorker import access_handler
             access_handler(path, "deny", rule)
 
-    # GUI handlers #
+    # Config file handlers
     def saveFile(self):
+        """Save changes to the config file"""
         toWrite = str(self.configFileBrowser.toPlainText())
         with open(config_read(), "r") as cfg:
             current = cfg.read()
+
         if toWrite != current:
             with open(config_read(), "w") as cfg:
                 cfg.write(toWrite)
             from src.pop import infoMessage, icons
-            infoMessage("Success", "File successfully written", "Config.ini has been successfully updated",
-                        icons("info"))
+            infoMessage(
+                "Success",
+                "File successfully written",
+                "Config.ini has been successfully updated",
+                icons("info")
+            )
         else:
             actionLogger("No changes were made, skipping...")
 
     def refreshFile(self):
+        """Refresh the config file display"""
         with open(config_read(), "r") as cfg:
             self.configFileBrowser.setText(cfg.read())
 
     def selectStylesheet(self):
+        """Apply the selected theme"""
         themeIndex = self.themeComboBox.currentIndex()
         modifyConfig("GUI", "stylesheet", allThemes[themeIndex])
         apply_stylesheet(self.main, getConfig("GUI", "stylesheet"))
 
     def editThread(self):
+        """Open the config file in a separate thread"""
         from threading import Thread
         editThread = Thread(target=self.openIni)
         editThread.start()
 
     @staticmethod
     def openIni():
+        """Open the config file in the default editor"""
         from src.cmdWorker import openConfig
         openConfig()
 
-    # Blacklist handler #
+    # Blacklist handlers
     def addToBlacklist(self):
+        """Add a filename to the blacklist"""
         ignoreFileName = self.blacklistLineEdit.text().strip()
         if not ignoreFileName:
             return False
@@ -261,11 +312,22 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         actionLogger(success)
 
         if success:
-            self.messageBox("Successfully added", "Success", f'Successfully added file "{ignoreFileName}" to the blacklist', PyQt5.QtWidgets.QMessageBox.Information)
+            self.messageBox(
+                "Successfully added",
+                "Success",
+                f'Successfully added file "{ignoreFileName}" to the blacklist',
+                PyQt5.QtWidgets.QMessageBox.Information
+            )
         else:
-            self.messageBox("Addition failed", "Error", f'Failed to add file "{ignoreFileName}" to the blacklist', PyQt5.QtWidgets.QMessageBox.Critical)
+            self.messageBox(
+                "Addition failed",
+                "Error",
+                f'Failed to add file "{ignoreFileName}" to the blacklist',
+                PyQt5.QtWidgets.QMessageBox.Critical
+            )
 
     def removeFromBlacklist(self):
+        """Remove a filename from the blacklist"""
         ignoreFileName = self.blacklistLineEdit.text().strip()
         if not ignoreFileName:
             return False
@@ -275,12 +337,23 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         actionLogger(success)
 
         if success:
-            self.messageBox("Successfully removed", "Success", f'Successfully removed file "{ignoreFileName}" from the blacklist', PyQt5.QtWidgets.QMessageBox.Information)
+            self.messageBox(
+                "Successfully removed",
+                "Success",
+                f'Successfully removed file "{ignoreFileName}" from the blacklist',
+                PyQt5.QtWidgets.QMessageBox.Information
+            )
         else:
-            self.messageBox("Removal failed", "Error", f'Failed to remove file "{ignoreFileName}" from the blacklist', PyQt5.QtWidgets.QMessageBox.Critical)
+            self.messageBox(
+                "Removal failed",
+                "Error",
+                f'Failed to remove file "{ignoreFileName}" from the blacklist',
+                PyQt5.QtWidgets.QMessageBox.Critical
+            )
 
-    # Type handler #
+    # File type handlers
     def addToTypes(self):
+        """Add a file extension to the accepted types"""
         typeSuffixName = self.typesLineEdit.text().strip()
         if not typeSuffixName:
             return False
@@ -296,28 +369,54 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         actionLogger(success)
 
         if success:
-            self.messageBox("Successfully added", "Success", f'Successfully added file "{typeSuffixName}" to accepted types', PyQt5.QtWidgets.QMessageBox.Information)
+            self.messageBox(
+                "Successfully added",
+                "Success",
+                f'Successfully added file "{typeSuffixName}" to accepted types',
+                PyQt5.QtWidgets.QMessageBox.Information
+            )
         else:
-            self.messageBox("Addition failed", "Error", f'Failed to add file "{typeSuffixName}" to accepted types', PyQt5.QtWidgets.QMessageBox.Critical)
+            self.messageBox(
+                "Addition failed",
+                "Error",
+                f'Failed to add file "{typeSuffixName}" to accepted types',
+                PyQt5.QtWidgets.QMessageBox.Critical
+            )
 
     def removeFromTypes(self):
-        typeSuffixName = self.typesLineEdit.text()
-        try:
-            if typeSuffixName[0] != ".":
-                typeSuffixName = "." + typeSuffixName
-        except IndexError:
+        """Remove a file extension from the accepted types"""
+        typeSuffixName = self.typesLineEdit.text().strip()
+        if not typeSuffixName:
             return False
+
+        if not typeSuffixName.startswith("."):
+            typeSuffixName = "." + typeSuffixName
+
         if typeSuffixName == ".":
             return False
+
         actionLogger("Removing suffix from accepted types...")
-        actionLogger(removeConfig("FILETYPE", "accepted_types", [typeSuffixName]))
-        if typeSuffixName == "." or "":
-            return
-        self.messageBox("Successfully removed", "Success", f'Successfully removed file "{typeSuffixName}" from accepted'
-                                                           f' types', PyQt5.QtWidgets.QMessageBox.Information)
+        success = removeConfig("FILETYPE", "accepted_types", [typeSuffixName])
+        actionLogger(success)
+
+        if success:
+            self.messageBox(
+                "Successfully removed",
+                "Success",
+                f'Successfully removed file "{typeSuffixName}" from accepted types',
+                PyQt5.QtWidgets.QMessageBox.Information
+            )
+        else:
+            self.messageBox(
+                "Removal failed",
+                "Error",
+                f'Failed to remove file "{typeSuffixName}" from accepted types',
+                PyQt5.QtWidgets.QMessageBox.Critical
+            )
 
     @staticmethod
     def messageBox(text: str, title: str, information=None, icon=PyQt5.QtWidgets.QMessageBox):
+        """Display a message box"""
         msgBox = PyQt5.QtWidgets.QMessageBox()
         msgBox.setIcon(icon)
         msgBox.setText(text)
@@ -332,6 +431,7 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         returnValue = msgBox.exec()
 
     def questionBoxHardCoded(self, text: str, title: str, information=None, icon=PyQt5.QtWidgets.QMessageBox):
+        """Display a question box with Yes/No options"""
         qBox = PyQt5.QtWidgets.QMessageBox()
         qBox.setIcon(icon)
         qBox.setText(text)
@@ -349,6 +449,7 @@ class UI(PyQt5.QtWidgets.QMainWindow):
 
 
 def firstRun(self):
+    """Handle first run actions"""
     self.questionBoxHardCoded(self, "Shell Handler installation prompt", "First run", "Hello! Thank you for installing"
                                                                                       " PyWall, would you like to "
                                                                                       "install a shell extension to "
