@@ -3,7 +3,7 @@ PyQt5>=5.15.0
 pyqt5==5.15.11
 psutil==5.9.5
 requests==2.32.3
-pillow==10.3.0
+pillow==11.1.0
 numpy==1.24.3
 pywin32>=227
 context-menu>=0.1.1
