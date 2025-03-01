@@ -83,7 +83,8 @@ def toastNotification(title, message):
             icon_path = None
 
             # Try to find the icon file
-            script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            script_dir = os.path.dirname(
+                os.path.dirname(os.path.abspath(__file__)))
             possible_icon = os.path.join(script_dir, "resources", "pywall.ico")
             if os.path.exists(possible_icon):
                 icon_path = possible_icon

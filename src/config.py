@@ -31,6 +31,7 @@ default_config = {
     }
 }
 
+
 def document_folder():
     """
     Get the path to the user's document folder.
@@ -38,8 +39,10 @@ def document_folder():
     CSIDL_PERSONAL = 5  # My Documents
     SHGFP_TYPE_CURRENT = 0  # Get current value, not default
     buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
-    ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
+    ctypes.windll.shell32.SHGetFolderPathW(
+        None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
     return buf.value
+
 
 def script_folder():
     """
@@ -48,6 +51,7 @@ def script_folder():
     if hasattr(sys, '_MEIPASS'):
         return sys._MEIPASS
     return os.path.abspath(".")
+
 
 def config_file():
     """
@@ -59,6 +63,7 @@ def config_file():
         return config_path
     make_default()
     return config_path
+
 
 def make_default():
     """
@@ -78,6 +83,7 @@ def make_default():
         config.write(configfile)
     actionLogger("Default configuration created")
 
+
 def get_config(section, variable, *extra_args):
     """
     Get a configuration value.
@@ -90,6 +96,7 @@ def get_config(section, variable, *extra_args):
         value_list = value.split(', ')
         return value_list[int(index_value)]
     return config[section][variable]
+
 
 def modify_config(section, variable, value):
     """
@@ -104,6 +111,7 @@ def modify_config(section, variable, value):
         actionLogger(f"Variable '{variable}' modified in section '{section}'")
     else:
         actionLogger(f"Variable '{variable}' not found in section '{section}'")
+
 
 def append_config(section, variable, value: list):
     """
@@ -121,9 +129,11 @@ def append_config(section, variable, value: list):
         config.set(section, variable, all_values)
         with open(config_file(), 'w', encoding='utf-8') as configfile:
             config.write(configfile)
-        actionLogger(f"Values '{value}' appended to variable '{variable}' in section '{section}'")
+        actionLogger(
+            f"Values '{value}' appended to variable '{variable}' in section '{section}'")
         return True
     return False
+
 
 def remove_config(section, variable, value: list):
     """
@@ -141,15 +151,18 @@ def remove_config(section, variable, value: list):
         config.set(section, variable, all_values)
         with open(config_file(), 'w', encoding='utf-8') as configfile:
             config.write(configfile)
-        actionLogger(f"Values '{value}' removed from variable '{variable}' in section '{section}'")
+        actionLogger(
+            f"Values '{value}' removed from variable '{variable}' in section '{section}'")
         return True
     return False
+
 
 def config_exists():
     """
     Check if the configuration file exists.
     """
     return os.path.exists(config_file())
+
 
 def validate_config(default_file=None):
     """

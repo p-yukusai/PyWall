@@ -4,6 +4,10 @@ PyWall - A simple firewall management tool for Windows.
 Allows easy control of inbound and outbound connections for applications.
 """
 
+from src.config import configExists, validateConfig, makeDefault
+from src.logger import logException, actionLogger
+from PyQt5.QtWidgets import QApplication
+import pathlib
 import sys
 import os
 import argparse
@@ -37,15 +41,20 @@ def main():
     """Main entry point for PyWall"""
     initConfig()
 
-    parser = argparse.ArgumentParser(description='PyWall - Firewall Management Tool')
-    parser.add_argument('-file', type=str, help='Target file or directory path')
+    parser = argparse.ArgumentParser(
+        description='PyWall - Firewall Management Tool')
+    parser.add_argument('-file', type=str,
+                        help='Target file or directory path')
     parser.add_argument('-allow', type=str, choices=['true', 'True', 'false', 'False'],
-                       help='Allow or deny internet access')
+                        help='Allow or deny internet access')
     parser.add_argument('-rule_type', type=str, choices=['in', 'out', 'both'],
-                       help='Rule type: inbound, outbound, or both')
-    parser.add_argument('-install', action='store_true', help='Install context menu')
-    parser.add_argument('-uninstall', action='store_true', help='Uninstall context menu')
-    parser.add_argument('-config', action='store_true', help='Open configuration file')
+                        help='Rule type: inbound, outbound, or both')
+    parser.add_argument('-install', action='store_true',
+                        help='Install context menu')
+    parser.add_argument('-uninstall', action='store_true',
+                        help='Uninstall context menu')
+    parser.add_argument('-config', action='store_true',
+                        help='Open configuration file')
 
     args = parser.parse_args()
 
@@ -82,12 +91,6 @@ def main():
 if __name__ == "__main__":
     main()
 ```python
-import pathlib
-import sys
-import argparse
-from PyQt5.QtWidgets import QApplication
-from src.logger import logException, actionLogger
-from src.config import configExists, validateConfig, makeDefault
 
 
 class Argument:
@@ -98,13 +101,15 @@ class Argument:
 def parse_arguments():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(description='PyWall is a small app to make it easy to administrate '
-                                              'simple firewall configurations, giving or revoking internet '
-                                              'access to certain applications.')
+                                     'simple firewall configurations, giving or revoking internet '
+                                     'access to certain applications.')
     # Arguments #
-    parser.add_argument("-file", help="The path to the file or folder", type=str)
+    parser.add_argument(
+        "-file", help="The path to the file or folder", type=str)
     parser.add_argument("-allow", help="Action to perform boolean, "
-                                    "True will Allow internet access, False will block it.", type=bool)
-    parser.add_argument("-rule_type", help="Argument accepts Inbound, outbound or both", type=str)
+                        "True will Allow internet access, False will block it.", type=bool)
+    parser.add_argument(
+        "-rule_type", help="Argument accepts Inbound, outbound or both", type=str)
     parser.add_argument("-c", help="Shell handler", type=str)
     return parser.parse_known_args()
 
@@ -123,7 +128,8 @@ def handle_command_arguments(args, unknown):
                 action = "allow"
             else:
                 action = "deny"
-            actionLogger(f"Shell action is {arg[0]}, filename is {file}, rule type is {arg[1]}, proceeding...")
+            actionLogger(
+                f"Shell action is {arg[0]}, filename is {file}, rule type is {arg[1]}, proceeding...")
             access_handler(pathlib.Path(file), action, arg[1])
             return True
 
@@ -141,7 +147,8 @@ def handle_command_arguments(args, unknown):
             return True
         elif not args.allow:
             actionLogger(f'Attempting to block "{file_path.stem}"')
-            access_handler(file_path, "deny", args.rule_type)  # Fixed: Changed "block" to "deny" to match cmdWorker
+            # Fixed: Changed "block" to "deny" to match cmdWorker
+            access_handler(file_path, "deny", args.rule_type)
             return True
 
     return False

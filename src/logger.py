@@ -39,8 +39,10 @@ def logCriticalException(Critical):
         logNameBool = exists(f"errorLogCritical{number}.log")
 
     logName = f"errorLogCritical{number}.log"
-    logging.basicConfig(filename=logName, filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-    logging.exception(f'Runtime error is "{Critical}", see full traceback below: \n ', exc_info=True)
+    logging.basicConfig(filename=logName, filemode='w',
+                        format='%(name)s - %(levelname)s - %(message)s')
+    logging.exception(
+        f'Runtime error is "{Critical}", see full traceback below: \n ', exc_info=True)
     actionLogger(f'Exception logged, runtime error is "{Critical}"')
     raise Exception(Critical)
 
@@ -56,8 +58,10 @@ def logStandardException(Critical):
                 logNameBool = exists(f"errorLog{number}.log")
 
             logName = f"errorLog{number}.log"
-            logging.basicConfig(filename=logName, filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-            logging.exception(f'Runtime error is "{Critical}", see full traceback below: \n ', exc_info=True)
+            logging.basicConfig(filename=logName, filemode='w',
+                                format='%(name)s - %(levelname)s - %(message)s')
+            logging.exception(
+                f'Runtime error is "{Critical}", see full traceback below: \n ', exc_info=True)
             actionLogger(f'Exception logged, runtime error is "{Critical}"')
     except Exception as e:
         actionLogger(f'Failed to log exception: {e}')

@@ -70,7 +70,8 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         # Theme handling
         theme_string = []
         for x in allThemes:
-            theme_string.append((x.replace(".xml", "").replace("_", " ")).title())
+            theme_string.append(
+                (x.replace(".xml", "").replace("_", " ")).title())
 
         self.themeComboBox.addItems(theme_string)
         try:
@@ -97,10 +98,12 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         # Checkboxes
         self.recursiveCheckbox.stateChanged.connect(self.recursiveChanged)
         self.actionlogCheckbox.stateChanged.connect(self.actionlogChanged)
-        self.exceptionlogCheckbox.stateChanged.connect(self.exceptionlogChanged)
+        self.exceptionlogCheckbox.stateChanged.connect(
+            self.exceptionlogChanged)
 
         # Access buttons
-        self.allowAccess.clicked.connect(lambda: self.internet_handler("allow"))
+        self.allowAccess.clicked.connect(
+            lambda: self.internet_handler("allow"))
         self.denyAccess.clicked.connect(lambda: self.internet_handler("deny"))
 
         # Rule type default
@@ -143,15 +146,16 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         if getConfig("DEBUG", "shell") == "True":
             icon = icons("warning")
             message = ("It seems that you have already installed the shell handler, if you believe this is a mistake "
-                      'please press open the config file and edit the "shell" variable from "True" to "False" and try'
-                      ' again.')
-            infoMessage("Already installed", "Shell handler has already been created", message, icon)
+                       'please press open the config file and edit the "shell" variable from "True" to "False" and try'
+                       ' again.')
+            infoMessage("Already installed",
+                        "Shell handler has already been created", message, icon)
             return False
 
         src.shellHandler.createInternetAccessMenu()
         icon = icons("info")
         infoMessage("Shell handler successfully created.", "Successfully added",
-                   "You may now see the PyWall when right-clicking a file or a folder.", icon)
+                    "You may now see the PyWall when right-clicking a file or a folder.", icon)
         modifyConfig("DEBUG", "shell", "True")
 
     @staticmethod
@@ -161,26 +165,30 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         if getConfig("DEBUG", "shell") == "False":
             icon = icons("warning")
             message = ("The shell handler has either never been installed or has already been uninstalled, if you "
-                      'believe this to be a mistake, please open the config file and edit the "shell" variable from '
-                      '"False" to "True" and try again.')
-            infoMessage("Not installed", "Shell handler has not yet been installed", message, icon)
+                       'believe this to be a mistake, please open the config file and edit the "shell" variable from '
+                       '"False" to "True" and try again.')
+            infoMessage(
+                "Not installed", "Shell handler has not yet been installed", message, icon)
             return False
 
         src.shellHandler.removeInternetAccessMenu()
         icon = icons("info")
         infoMessage("Shell handler successfully removed.", "Successfully removed",
-                   "The PyWall option will no longer be available when right-clicking a file or a folder", icon)
+                    "The PyWall option will no longer be available when right-clicking a file or a folder", icon)
         modifyConfig("DEBUG", "shell", "False")
 
     # Checkbox handlers
     def recursiveChanged(self, state):
-        self.updateCheckboxState(self.recursiveCheckbox, state, "FILETYPE", "recursive")
+        self.updateCheckboxState(
+            self.recursiveCheckbox, state, "FILETYPE", "recursive")
 
     def actionlogChanged(self, state):
-        self.updateCheckboxState(self.actionlogCheckbox, state, "DEBUG", "create_logs")
+        self.updateCheckboxState(
+            self.actionlogCheckbox, state, "DEBUG", "create_logs")
 
     def exceptionlogChanged(self, state):
-        self.updateCheckboxState(self.exceptionlogCheckbox, state, "DEBUG", "create_exception_logs")
+        self.updateCheckboxState(
+            self.exceptionlogCheckbox, state, "DEBUG", "create_exception_logs")
 
     def updateCheckboxState(self, checkbox, state, section, key):
         """Update a checkbox state and corresponding config value"""
@@ -228,7 +236,8 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         outbound = True if self.outbound_check.checkState() == 2 else False
 
         if not inbound and not outbound:
-            self.pathLineEdit.setText("Please select one or more rule types before proceeding")
+            self.pathLineEdit.setText(
+                "Please select one or more rule types before proceeding")
             return
 
         rule = "both" if inbound and outbound else "in" if inbound else "out"
@@ -242,7 +251,8 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             if text == "debug":
                 pass
             elif text is None or not path.exists() or text == '':
-                actionLogger("No valid path has been detected, aborting operation")
+                actionLogger(
+                    "No valid path has been detected, aborting operation")
                 return
         except OSError:
             actionLogger("Invalid, aborting operation")
@@ -308,7 +318,8 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             return False
 
         actionLogger("Adding to filename blacklist...")
-        success = appendConfig("FILETYPE", "blacklisted_names", [ignoreFileName])
+        success = appendConfig(
+            "FILETYPE", "blacklisted_names", [ignoreFileName])
         actionLogger(success)
 
         if success:
@@ -333,7 +344,8 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             return False
 
         actionLogger("Removing item from filename blacklist...")
-        success = removeConfig("FILETYPE", "blacklisted_names", [ignoreFileName])
+        success = removeConfig(
+            "FILETYPE", "blacklisted_names", [ignoreFileName])
         actionLogger(success)
 
         if success:
@@ -438,7 +450,8 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         qBox.setWindowTitle(title)
         if information is not None:
             qBox.setInformativeText(information)
-        qBox.setStandardButtons(PyQt5.QtWidgets.QMessageBox.Yes | PyQt5.QtWidgets.QMessageBox.No)
+        qBox.setStandardButtons(
+            PyQt5.QtWidgets.QMessageBox.Yes | PyQt5.QtWidgets.QMessageBox.No)
         try:
             qBox.setWindowIcon(QIcon(iconFile))
         except FileNotFoundError:
@@ -460,7 +473,7 @@ def firstRun(self):
 
 
 # GUI Bootstrapper #
-def start(bypass_stylesheet = False):
+def start(bypass_stylesheet=False):
     app = PyQt5.QtWidgets.QApplication(sys.argv)
     if not bypass_stylesheet:
         try:

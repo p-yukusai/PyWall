@@ -35,7 +35,8 @@ def path_error(path: pathlib.Path):
             )
             return
         except NameError:
-            actionLogger(f"Commands detected, skipping infoMessage, specified path '{path}' does not exist")
+            actionLogger(
+                f"Commands detected, skipping infoMessage, specified path '{path}' does not exist")
             toastNotification(
                 "Path doesn't exist",
                 f'"{str(path.name).title()}" doesn\'t exist or is not a valid '
@@ -52,7 +53,8 @@ def path_error(path: pathlib.Path):
         )
         return
     except NameError:
-        actionLogger("Commands detected, skipping infoMessage, no accepted filetypes were found")
+        actionLogger(
+            "Commands detected, skipping infoMessage, no accepted filetypes were found")
         if path.is_dir():
             toastNotification(
                 "No accepted filetypes",
@@ -73,6 +75,7 @@ def get_allowed_types():
         return []
     return [t.strip() for t in allowed_types_str.split(",")]
 
+
 allowedTypes = get_allowed_types()
 
 
@@ -81,14 +84,16 @@ def path_foreach_in(path):  # A rather telling name, isn't?
     glob_pattern = os.path.join(path, '*')
     filesNoRecursive = sorted(glob(glob_pattern), key=os.path.getctime)
     if getConfig("FILETYPE", "recursive") == "True":
-        filesRecursive = sorted(glob(glob_pattern + r"/**", recursive=True), key=os.path.getctime)
+        filesRecursive = sorted(
+            glob(glob_pattern + r"/**", recursive=True), key=os.path.getctime)
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
     elif getConfig("FILETYPE", "recursive") == "False":
         files = filesNoRecursive
     else:
         from src.config import modifyConfig
         modifyConfig("FILETYPE", "recursive", "True")
-        filesRecursive = sorted(glob(glob_pattern + r"/**", recursive=True), key=os.path.getctime)
+        filesRecursive = sorted(
+            glob(glob_pattern + r"/**", recursive=True), key=os.path.getctime)
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
     return files
 
@@ -186,8 +191,10 @@ def access_handler(path, action, rule_type: str):
                 except NameError:
                     actionLogger("Commands detected, skipping infoMessage")
                     pass
-                args = " ".join(sys.argv)  # Fixed bug: Changed from "".join(sys.argv) to " ".join(sys.argv)
-                ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, None, 1)
+                # Fixed bug: Changed from "".join(sys.argv) to " ".join(sys.argv)
+                args = " ".join(sys.argv)
+                ctypes.windll.shell32.ShellExecuteW(
+                    None, "runas", sys.executable, args, None, 1)
             sys.exit("Admin re-run")
 
     except Exception as argument:
@@ -195,9 +202,11 @@ def access_handler(path, action, rule_type: str):
         raise
 
     if action == "deny":
-        toastNotification("Success", f'Internet access successfully denied to\n"{path}"')
+        toastNotification(
+            "Success", f'Internet access successfully denied to\n"{path}"')
     elif action == "allow":
-        toastNotification("Success", f'Internet access successfully allowed to\n"{path}"')
+        toastNotification(
+            "Success", f'Internet access successfully allowed to\n"{path}"')
     else:
         return "Invalid action"
 
