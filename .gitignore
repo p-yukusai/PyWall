@@ -152,3 +152,7 @@ ENV/
 user_data/
 wallpapers/temp/
 config.json
+
+# Node.js
+node_modules/*
+

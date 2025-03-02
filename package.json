@@ -1,10 +1,10 @@
 {
   "name": "pywall",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "description": "PyWall project",
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "./scripts/format.ps1",
+    "format:check": "./scripts/format.ps1 -Check"
   },
   "devDependencies": {
     "prettier": "3.5.2"

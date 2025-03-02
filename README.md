@@ -23,31 +23,23 @@
 
 # PyWall
 
-PyWall is a Python-based firewall application. This tool helps manage network traffic by filtering incoming and outgoing connections based on configurable rules.
+PyWall is a Python-based firewall application. This tool helps manage network traffic by creating and configuring firewall rules. Note that PyWall does not monitor network traffic itself.
 
 ## Features
 
 - Configure firewall rules
-- Monitor network traffic
 - Block or allow connections based on IP, port, or application
 - User-friendly interface
 
 ## Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/PyWall.git
-cd PyWall
+The easiest way to install PyWall is to download and run the latest executable from the [Releases](https://github.com/p-yukusai/PyWall/releases) page.
 
-# Install dependencies
-pip install -r requirements.txt
-```
+Simply download the installer (.exe) file and run it to install PyWall on your system.
 
 ## Usage
 
-```bash
-python main.py
-```
+After installation, you can launch PyWall from the Start menu or use the context menu by right-clicking on files or folders.
 
 ## Contributing
 
@@ -112,3 +104,15 @@ You are free to read the code and compile it yourself, and, while the releases a
 ## PSA 🌠
 
 I believe it to be important to remind people of the potential dangers of programs that interact with the security features of your system, this is why it is so valuable to be able to review what a certain piece software does and doesn't do, as such, please exercise caution with what you install on your system!<br/> If you do not trust a particular piece of software, you can just not install it, use a sandbox or block its internet access to make having it on your system a bit more secure, and, since you're already here, why not use PyWall for the latter? 😉.
+
+## Development
+
+### Scripts
+
+PyWall includes several utility scripts in the `scripts` directory:
+
+- `build.ps1`: PowerShell script to build PyWall using PyInstaller
+- `format.ps1`: PowerShell script to format code using prettier
+- `update_version.ps1`: PowerShell script to update the version number across all files
+
+For more information, see the [scripts README](scripts/README.md).

@@ -4,7 +4,7 @@ Notification and message display functionality for PyWall.
 
 import sys
 import os
-from PyQt5.QtWidgets import QMessageBox, QApplication
+from PyQt5.QtWidgets import QMessageBox, QApplication, QStyle
 from src.config import getConfig
 
 
@@ -76,29 +76,25 @@ def toastNotification(title, message):
     if getConfig("UI", "show_notifications") != "True":
         return
 
-    if sys.platform == 'win32':
-        try:
-            from win10toast import ToastNotifier
-            toaster = ToastNotifier()
-            icon_path = None
+    try:
+        from win10toast import ToastNotifier
+        toaster = ToastNotifier()
+        icon_path = None
 
-            # Try to find the icon file
-            script_dir = os.path.dirname(
-                os.path.dirname(os.path.abspath(__file__)))
-            possible_icon = os.path.join(script_dir, "resources", "pywall.ico")
-            if os.path.exists(possible_icon):
-                icon_path = possible_icon
+        # Try to find the icon file
+        script_dir = os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__)))
+        possible_icon = os.path.join(script_dir, "resources", "pywall.ico")
+        if os.path.exists(possible_icon):
+            icon_path = possible_icon
 
-            toaster.show_toast(
-                title,
-                message,
-                icon_path=icon_path,
-                duration=5,
-                threaded=True
-            )
-        except ImportError:
-            # Fall back to message box if win10toast is not available
-            infoMessage(title, None, message)
-    else:
-        # For non-Windows platforms
+        toaster.show_toast(
+            title,
+            message,
+            icon_path=icon_path,
+            duration=5,
+            threaded=True
+        )
+    except ImportError:
+        # Fall back to message box if win10toast is not available
         infoMessage(title, None, message)

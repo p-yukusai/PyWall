@@ -18,7 +18,7 @@ with open('requirements.txt', 'r') as f:
 
 setup(
     name="PyWall",
-    version="1.0.0",
+    version="0.9.0",
     description="A simple firewall management tool for Windows",
     author="PyWall Team",
     packages=find_packages(),
