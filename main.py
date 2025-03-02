@@ -4,9 +4,13 @@ PyWall - A simple firewall management tool for Windows.
 Allows easy control of inbound and outbound connections for applications.
 """
 
-from src.config import initConfig, documentFolder, getConfig, configExists, validateConfig, makeDefault
+from src.config import config_exists as configExists
+from src.config import validate_config as validateConfig
+from src.config import make_default as makeDefault
+from src.config import document_folder as documentFolder
+from src.config import get_config as getConfig
 from src.logger import logException, actionLogger
-from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtWidgets
 import pathlib
 import sys
 import os
@@ -47,8 +51,6 @@ def main():
         makeDefault()
     if not validateConfig():
         makeDefault()
-
-    initConfig()
 
     parser = argparse.ArgumentParser(
         description='PyWall - Firewall Management Tool')
@@ -121,7 +123,13 @@ def main():
 
     # Launch GUI if no command line arguments are provided
     try:
-        from src.gui import start_gui
+        # Try to import the GUI module
+        try:
+            from src.gui import start_gui
+        except ImportError:
+            # If src.gui doesn't exist, try to use configGui instead
+            from src.configGui import start as start_gui
+
         start_gui()
     except Exception as critical:
         logException("unexpected_error", critical)
