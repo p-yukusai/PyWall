@@ -27,8 +27,8 @@ PyWall is a Python-based firewall application. This tool helps manage network tr
 
 ## Features
 
-- Configure firewall rules
-- Block or allow connections based on IP, port, or application
+- Configure firewall rules for specific files
+- Block or allow connections for files based on inbound or outbound rules
 - User-friendly interface
 
 ## Installation
