@@ -645,7 +645,7 @@ For example: Nextcloud server connections</string>
                                                 </item>
                                             </layout>
                                         </widget>
-                                        <widget class="QWidget" name="configFile">
+                                        <widget class="QWidget" name="config_file">
                                             <property name="sizePolicy">
                                                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                                                     <horstretch>0</horstretch>

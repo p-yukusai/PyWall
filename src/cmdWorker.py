@@ -9,9 +9,9 @@ import ctypes
 import pathlib
 from src.pop import toastNotification, infoMessage, icons
 from src.logger import actionLogger, logException
-from src.config import getConfig, config_file as configFile
+from src.config import get_config, config_file
 
-ignoredFiles = getConfig("FILETYPE", "blacklisted_names").split(",")
+ignoredFiles = get_config("FILETYPE", "blacklisted_names").split(",")
 
 
 def admin():
@@ -70,7 +70,7 @@ def path_error(path: pathlib.Path):
 
 
 def get_allowed_types():
-    allowed_types_str = getConfig("FILETYPE", "accepted_types")
+    allowed_types_str = get_config("FILETYPE", "accepted_types")
     if not allowed_types_str:
         return []
     return [t.strip() for t in allowed_types_str.split(",")]
@@ -83,15 +83,15 @@ def path_foreach_in(path):  # A rather telling name, isn't?
     from glob import glob
     glob_pattern = os.path.join(path, '*')
     filesNoRecursive = sorted(glob(glob_pattern), key=os.path.getctime)
-    if getConfig("FILETYPE", "recursive") == "True":
+    if get_config("FILETYPE", "recursive") == "True":
         filesRecursive = sorted(
             glob(glob_pattern + r"/**", recursive=True), key=os.path.getctime)
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
-    elif getConfig("FILETYPE", "recursive") == "False":
+    elif get_config("FILETYPE", "recursive") == "False":
         files = filesNoRecursive
     else:
-        from src.config import modifyConfig
-        modifyConfig("FILETYPE", "recursive", "True")
+        from src.config import modify_config
+        modify_config("FILETYPE", "recursive", "True")
         filesRecursive = sorted(
             glob(glob_pattern + r"/**", recursive=True), key=os.path.getctime)
         files = sorted(filesRecursive + filesNoRecursive, key=os.path.getctime)
@@ -212,4 +212,4 @@ def access_handler(path, action, rule_type: str):
 
 
 def open_config():
-    subprocess.call(f'cmd /c @echo off && {configFile()}')
+    subprocess.call(f'cmd /c @echo off && {config_file()}')

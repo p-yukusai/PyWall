@@ -2,7 +2,7 @@ import subprocess
 import os
 import pathlib
 from context_menu import menus
-from src.config import getConfig, documentFolder
+from src.config import get_config, document_folder
 from src.pop import infoMessage, icons
 
 
@@ -10,8 +10,8 @@ from src.pop import infoMessage, icons
 # this means duping already existing code :(
 
 def getScriptFolder():
-    document_folder = documentFolder()
-    return document_folder + "\\PyWall\\Executable.txt"
+    document_folder_path = document_folder()
+    return document_folder_path + "\\PyWall\\Executable.txt"
 
 
 # Making the messagebox in Qt saves space in the executable, otherwise we would have the good old Tkinter bloat #

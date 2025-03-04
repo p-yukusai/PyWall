@@ -5,7 +5,7 @@ Notification and message display functionality for PyWall.
 import sys
 import os
 from PyQt5.QtWidgets import QMessageBox, QApplication, QStyle
-from src.config import getConfig
+from src.config import get_config
 
 
 def icons(icon_type="info"):
@@ -28,7 +28,7 @@ def icons(icon_type="info"):
 
 def infoMessage(title, subtitle, message, icon=None):
     """Display an information message box"""
-    if getConfig("UI", "show_notifications") != "True":
+    if get_config("UI", "show_notifications") != "True":
         return
 
     app = QApplication.instance()
@@ -50,7 +50,7 @@ def infoMessage(title, subtitle, message, icon=None):
 
 def confirmDialog(title, message, icon=None):
     """Display a confirmation dialog and return True if user confirms"""
-    if getConfig("UI", "confirmation_dialog") != "True":
+    if get_config("UI", "confirmation_dialog") != "True":
         return True
 
     app = QApplication.instance()
@@ -73,7 +73,7 @@ def confirmDialog(title, message, icon=None):
 
 def toastNotification(title, message):
     """Display a toast notification"""
-    if getConfig("UI", "show_notifications") != "True":
+    if get_config("UI", "show_notifications") != "True":
         return
 
     try:

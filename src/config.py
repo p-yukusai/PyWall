@@ -7,7 +7,7 @@ import sys
 import os
 import configparser
 import ctypes.wintypes
-from src.logger import actionLogger
+from src.logging_utils import action_logger
 
 PYWALL_INI = "\\PyWall\\Config.ini"
 PYWALL = "\\PyWall"
@@ -22,6 +22,9 @@ default_config = {
         "advanced_mode": "False",
         "stylesheet": "dark_red.xml",
         "first_run": "True"
+    },
+    "UI": {
+        "show_notifications": "True"
     },
     "DEBUG": {
         "create_logs": "False",
@@ -81,7 +84,7 @@ def make_default():
             config.set(section, option, value)
     with open(config_path, 'w', encoding='utf-8') as configfile:
         config.write(configfile)
-    actionLogger("Default configuration created")
+    action_logger("Default configuration created")
 
 
 def get_config(section, variable, *extra_args):
@@ -108,9 +111,10 @@ def modify_config(section, variable, value):
         config.set(section, variable, value)
         with open(config_file(), 'w', encoding='utf-8') as configfile:
             config.write(configfile)
-        actionLogger(f"Variable '{variable}' modified in section '{section}'")
+        action_logger(f"Variable '{variable}' modified in section '{section}'")
     else:
-        actionLogger(f"Variable '{variable}' not found in section '{section}'")
+        action_logger(
+            f"Variable '{variable}' not found in section '{section}'")
 
 
 def append_config(section, variable, value: list):
@@ -121,15 +125,20 @@ def append_config(section, variable, value: list):
     config.read(config_file())
     if config.has_option(section, variable):
         current = config.get(section, variable)
-        all_values = current.split(", ") if "," in current else [current]
+        # Clean up any trailing commas
+        current = current.rstrip(",")
+        # Split by comma and clean up each item
+        all_values = [item.strip()
+                      for item in current.split(",") if item.strip()]
         for x in value:
             if x not in all_values:
                 all_values.append(x)
+        # Join with comma and space
         all_values = ", ".join(all_values)
         config.set(section, variable, all_values)
         with open(config_file(), 'w', encoding='utf-8') as configfile:
             config.write(configfile)
-        actionLogger(
+        action_logger(
             f"Values '{value}' appended to variable '{variable}' in section '{section}'")
         return True
     return False
@@ -151,7 +160,7 @@ def remove_config(section, variable, value: list):
         config.set(section, variable, all_values)
         with open(config_file(), 'w', encoding='utf-8') as configfile:
             config.write(configfile)
-        actionLogger(
+        action_logger(
             f"Values '{value}' removed from variable '{variable}' in section '{section}'")
         return True
     return False
@@ -181,20 +190,20 @@ def validate_config(default_file=None):
             make_default()
             time.sleep(0.1)
 
-        actionLogger("-" * 50)
+        action_logger("-" * 50)
         for x in range(len(default_file.keys())):
             section = list(default_file.keys())[x]
             for option in default_file[section]:
                 if config.has_option(section, option):
-                    actionLogger(f'"{option}" validated')
+                    action_logger(f'"{option}" validated')
                 else:
-                    actionLogger(f'Check failed for "{option}"')
-                    actionLogger("-" * 50)
+                    action_logger(f'Check failed for "{option}"')
+                    action_logger("-" * 50)
                     make_default()
-        actionLogger("-" * 50)
-        actionLogger("Updating version")
+        action_logger("-" * 50)
+        action_logger("Updating version")
         modify_config("DEBUG", "version", default_file["DEBUG"]["version"])
-        actionLogger("-" * 50)
+        action_logger("-" * 50)
         return True
 
     make_default()

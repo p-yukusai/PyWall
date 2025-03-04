@@ -4,61 +4,54 @@ PyWall - A simple firewall management tool for Windows.
 Allows easy control of inbound and outbound connections for applications.
 """
 
-from src.config import config_exists as configExists
-from src.config import validate_config as validateConfig
-from src.config import make_default as makeDefault
-from src.config import document_folder as documentFolder
-from src.config import get_config as getConfig
-from src.logger import logException, actionLogger
-from PyQt5 import QtWidgets
-import pathlib
 import sys
 import os
 import argparse
+import pathlib
+from PyQt5.QtWidgets import QApplication
+from src.config import (
+    config_exists,
+    validate_config,
+    make_default,
+    document_folder
+)
+from src.logger import logException, actionLogger
 from src.cmdWorker import access_handler
 from src.shellHandler import createInternetAccessMenu, removeInternetAccessMenu
 
 
 def checkExistingInstall():
-    """Check if PyWall has already saved its location"""
-    document_folder = documentFolder()
-    script_folder = document_folder + "\\PyWall\\Executable.txt"
-    try:
-        with open(script_folder, 'r') as sf:
-            return True
-    except FileNotFoundError:
-        return False
+    """Check if PyWall is already installed."""
+    document_folder_path = document_folder()
+    return os.path.exists(document_folder_path + "\\PyWall\\Executable.txt")
 
 
 def saveCurrentFolder():
-    """Save the current folder to allow context menu to find PyWall"""
-    document_folder = documentFolder()
-    os.makedirs(document_folder + "\\PyWall", exist_ok=True)
-    script_folder = document_folder + "\\PyWall\\Executable.txt"
-    with open(script_folder, 'w') as sf:
-        sf.write(os.path.dirname(os.path.abspath(__file__)))
-
-
-class Argument:
-    """Simple class to represent argument information for error logging"""
-    pass
+    """Save the current folder for context menu access."""
+    document_folder_path = document_folder()
+    if not os.path.exists(document_folder_path + "\\PyWall"):
+        os.makedirs(document_folder_path + "\\PyWall")
+    with open(document_folder_path + "\\PyWall\\Executable.txt", 'w') as f:
+        f.write(os.path.dirname(os.path.abspath(__file__)))
 
 
 def main():
-    """Main entry point for PyWall"""
+    """Main entry point for PyWall."""
     # Verify config file
-    if not configExists():
-        makeDefault()
-    if not validateConfig():
-        makeDefault()
+    if not config_exists():
+        make_default()
+    if not validate_config():
+        make_default()
 
     parser = argparse.ArgumentParser(
         description='PyWall - Firewall Management Tool')
     parser.add_argument('-file', type=str,
                         help='Target file or directory path')
-    parser.add_argument('-allow', type=str, choices=['true', 'True', 'false', 'False'],
+    parser.add_argument('-allow', type=str,
+                        choices=['true', 'True', 'false', 'False'],
                         help='Allow or deny internet access')
-    parser.add_argument('-rule_type', type=str, choices=['in', 'out', 'both'],
+    parser.add_argument('-rule_type', type=str,
+                        choices=['in', 'out', 'both'],
                         help='Rule type: inbound, outbound, or both')
     parser.add_argument('-install', action='store_true',
                         help='Install context menu')
@@ -80,14 +73,15 @@ def main():
         # Access handling
         if "allowAccess" in argument or "denyAccess" in argument:
             arg = argument.split(",")
-            file = sys.argv[3]
+            file_path = sys.argv[3]
             if "allowAccess" in arg[0]:
                 action = "allow"
             else:
                 action = "deny"
             actionLogger(
-                f"Shell action is {arg[0]}, filename is {file}, rule type is {arg[1]}, proceeding...")
-            access_handler(pathlib.Path(file), action, arg[1])
+                f"Shell action is {arg[0]}, filename is {file_path}, "
+                f"rule type is {arg[1]}, proceeding...")
+            access_handler(pathlib.Path(file_path), action, arg[1])
             return
 
     if args.install:
@@ -123,14 +117,18 @@ def main():
 
     # Launch GUI if no command line arguments are provided
     try:
-        # Try to import the GUI module
+        # Import and start the GUI
+        from src.configGui import start
+        app = QApplication(sys.argv)
         try:
-            from src.gui import start_gui
-        except ImportError:
-            # If src.gui doesn't exist, try to use configGui instead
-            from src.configGui import start as start_gui
-
-        start_gui()
+            start()  # Use the start function from configGui
+        except Exception as e:
+            logException("gui_error", e)
+            raise
+        sys.exit(app.exec_())
+    except ImportError as e:
+        logException("import_error", e)
+        raise
     except Exception as critical:
         logException("unexpected_error", critical)
         raise  # Re-raise the exception after logging it

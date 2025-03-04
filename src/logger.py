@@ -1,6 +1,28 @@
-from os.path import exists
-from src.config import getConfig
+"""Logging module for PyWall."""
+
 import logging
+import os
+from src.logging_utils import (
+    action_logger,
+    log_exception,
+    log_critical_exception,
+    log_standard_exception,
+    enable_logging
+)
+from src.config import get_config
+
+
+def exists(file):
+    """Check if a file exists"""
+    return os.path.exists(file)
+
+
+# Re-export with original names for backward compatibility
+actionLogger = action_logger
+logException = log_exception
+logCriticalException = log_critical_exception
+logStandardException = log_standard_exception
+enableLogging = enable_logging
 
 
 def actionLogger(actionLogged):
@@ -12,7 +34,7 @@ def actionLogger(actionLogged):
         print(str(actionLogged).encode("utf8"))
 
     try:
-        if getConfig("DEBUG", "create_logs") == "True":
+        if get_config("DEBUG", "create_logs") == "True":
             with open('logger.log', 'a') as log:
                 log.write(actionLogged + '\n')
     except Exception as Argument:
@@ -50,7 +72,7 @@ def logCriticalException(Critical):
 def logStandardException(Critical):
     """Log a standard exception without raising"""
     try:
-        if getConfig("DEBUG", "create_exception_logs") == "True":
+        if get_config("DEBUG", "create_exception_logs") == "True":
             number = 0
             logNameBool = exists(f"errorLog{number}.log")
             while logNameBool:
