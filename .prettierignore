@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+build/
+dist/
+out/
+
+# Cache and logs
+.cache/
+*.log
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python related
+__pycache__/
+*.py[cod]
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Other
+.DS_Store
+*.bak
