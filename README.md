@@ -23,7 +23,7 @@
 
 # PyWall
 
-PyWall is a Python-based firewall application. This tool helps manage network traffic by creating and configuring firewall rules. Note that PyWall does not monitor network traffic itself.
+PyWall is a Python-based firewall application. This tool helps manage network traffic by creating and configuring firewall rules.
 
 ## Features
 
@@ -47,7 +47,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the GPL v3 License - see the LICENSE file for details.
 
 ## What is it? 🔐
 
