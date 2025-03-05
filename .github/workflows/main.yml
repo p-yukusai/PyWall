@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Python
-        uses: palewire/install-python-pipenv-pipfile@v2
+        uses: palewire/install-python-pipenv-pipfile@v4
         with:
           python-version: 3.9
       - name: Install dependencies and build
@@ -26,7 +26,7 @@ jobs:
           pip install pyqt5Custom
           pyinstaller main.py --noconfirm --onedir --window --uac-admin -n "PyWall" --icon "img/PyWall.ico" --add-data "img;img/" --add-data "src;src/" --add-data "C:\Users\runneradmin\.virtualenvs\PyWall-65-QOBsy\Lib\site-packages\context_menu;context_menu\"
       - name: Zip artifact
-        uses: vimtor/action-zip@v1
+        uses: vimtor/action-zip@v1.2
         with:
           files: dist/PyWall
           dest: PyWall.zip
