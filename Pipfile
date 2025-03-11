@@ -7,7 +7,7 @@ name = "pypi"
 pyqt5 = "*"
 qt-material = "*"
 context-menu = "*"
-winotify = "*"
+windows-toasts = "*"
 
 [dev-packages]
 pyinstaller = "*"

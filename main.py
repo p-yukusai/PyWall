@@ -4,13 +4,14 @@ PyWall - A simple firewall management tool for Windows.
 Allows easy control of inbound and outbound connections for applications.
 """
 
-import sys
-import os
 import argparse
+import os
 import pathlib
-from argparse import ArgumentError
+import sys
 
 from PyQt5.QtWidgets import QApplication
+
+from src.cmdWorker import access_handler
 from src.config import (
     config_exists,
     validate_config,
@@ -18,7 +19,6 @@ from src.config import (
     document_folder
 )
 from src.logger import logException, actionLogger
-from src.cmdWorker import access_handler
 from src.shellHandler import createInternetAccessMenu, removeInternetAccessMenu
 
 
@@ -48,25 +48,25 @@ def main():
     parser = argparse.ArgumentParser(
         description='PyWall - Firewall Management Tool')
     parser.add_argument('-file',
-                        help='Target file or directory path')
+                        help='Target file or directory path', type=str)
     parser.add_argument('-allow',
                         choices=['true', 'True', 'false', 'False'],
-                        help='Allow or deny internet access')
+                        help='Allow or deny internet access', type=str)
     parser.add_argument('-rule_type',
                         choices=['in', 'out', 'both'],
-                        help='Rule type: inbound, outbound, or both')
+                        help='Rule type: inbound, outbound, or both', type=str)
     parser.add_argument('-install', action='store_true',
                         help='Install context menu')
     parser.add_argument('-uninstall', action='store_true',
                         help='Uninstall context menu')
     parser.add_argument('-config', action='store_true',
                         help='Open configuration file')
-    parser.add_argument("-c", help="Shell handler")
+    parser.add_argument("-c", help="Shell handler", type=str)
 
     try:
         args = parser.parse_args()
-    except AttributeError as e:
-        raise ArgumentError(Args)
+    except AttributeError as Args:
+        print (Args)
         args = None
     # Save the current folder for context menu access
     if not checkExistingInstall():

@@ -1,9 +1,10 @@
-import subprocess
 import os
 import pathlib
+import subprocess
+
 from context_menu import menus
-from src.config import get_config, document_folder
-from src.pop import infoMessage, icons
+
+from src.config import document_folder
 
 
 # Having to define stuff anew in this script, since it's technically separate in the context of the shell
