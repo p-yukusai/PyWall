@@ -10,6 +10,7 @@ context-menu = "*"
 winotify = "*"
 
 [dev-packages]
+pyinstaller = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.11"

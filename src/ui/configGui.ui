@@ -719,14 +719,14 @@ For example: Nextcloud server connections</string>
                                                 </property>
                                                 <property name="minimumSize">
                                                     <size>
-                                                        <width>279</width>
-                                                        <height>209</height>
+                                                        <width>280</width>
+                                                        <height>210</height>
                                                     </size>
                                                 </property>
                                                 <property name="maximumSize">
                                                     <size>
-                                                        <width>279</width>
-                                                        <height>209</height>
+                                                        <width>280</width>
+                                                        <height>210</height>
                                                     </size>
                                                 </property>
                                                 <property name="sizeIncrement">
@@ -792,7 +792,7 @@ For example: Nextcloud server connections</string>
                                                     </font>
                                                 </property>
                                                 <property name="text">
-                                                    <string>Developed with ❤ by Yukusai</string>
+                                                    <string>Developed by Yukusai with contributions by peter9811</string>
                                                 </property>
                                                 <property name="alignment">
                                                     <set>Qt::AlignCenter</set>

@@ -29,7 +29,7 @@ default_config = {
     "DEBUG": {
         "create_logs": "False",
         "create_exception_logs": "True",
-        "version": "v1.7.3",
+        "version": "v1.8",
         "shell": "False"
     }
 }
@@ -208,3 +208,4 @@ def validate_config(default_file=None):
 
     make_default()
     return True
+

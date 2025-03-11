@@ -12,7 +12,6 @@ from src.config import (
     modify_config,
     append_config,
     remove_config,
-    default_config,
     document_folder,
     script_folder
 )
@@ -60,7 +59,7 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         # Init and loading #
         try:
             super(UI, self).__init__()
-            self.main = uic.loadUi(uiFile, self)
+            self.main = PyQt5.uic.loadUi(uiFile, self)
             self.setWindowIcon(QIcon(iconFile))
         except FileNotFoundError:
             super(UI, self).__init__()
