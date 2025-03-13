@@ -208,3 +208,34 @@ def validate_config(default_file=None):
 
     make_default()
     return True
+
+
+def setup_config_watcher():
+    """Set up a file watcher to automatically reload config when it changes"""
+    import threading
+    import time
+    import os
+    from src.logger import actionLogger as logger
+
+    config_last_modified = os.path.getmtime(config_file())
+
+    def watcher():
+        nonlocal config_last_modified
+        while True:
+            try:
+                current_modified = os.path.getmtime(config_file())
+                if current_modified > config_last_modified:
+                    config_last_modified = current_modified
+                    reload_config()
+            except Exception:
+                pass
+            time.sleep(2)  # Check every 2 seconds
+
+    def reload_config():
+        logger("Config file changed, reloading configuration")
+        validate_config()
+
+        # Reset any cached config values here
+
+    # Start watcher in background thread
+    threading.Thread(target=watcher, daemon=True).start()

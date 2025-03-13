@@ -455,10 +455,11 @@ class UI(PyQt5.QtWidgets.QMainWindow):
         if not typeSuffixName.startswith("."):
             typeSuffixName = "." + typeSuffixName
 
-        if typeSuffixName == ".":
+        if typeSuffixName == "." or typeSuffixName == "":
             return False
 
-        actionLogger("Removing suffix from accepted types...")
+        actionLogger(
+            f"Removing suffix '{typeSuffixName}' from accepted types...")
         success = remove_config("FILETYPE", "accepted_types", [typeSuffixName])
         actionLogger(success)
 

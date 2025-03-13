@@ -1,23 +1,25 @@
-import subprocess
 import os
 import pathlib
-from context_menu import menus
-from src.config import get_config, document_folder
-from src.pop import infoMessage, icons
+import subprocess
+import sys  # Added missing sys import at the module level
 
+from context_menu import menus
+
+from src.config import document_folder, get_config
+from src.pop import icons, infoMessage
 
 # Having to define stuff anew in this script, since it's technically separate in the context of the shell
 # this means duping already existing code :(
 
+
 def getScriptFolder():
-    document_folder_path = document_folder()
+    document_folder_path = str(document_folder())
     return document_folder_path + "\\PyWall\\Executable.txt"
 
 
 # Making the messagebox in Qt saves space in the executable, otherwise we would have the good old Tkinter bloat #
 def pop(title, text, close: bool):
-    import sys
-    from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
+    from PyQt5.QtWidgets import QApplication, QMessageBox, QWidget
 
     def window():
         app = QApplication(sys.argv)
@@ -41,11 +43,11 @@ def pop(title, text, close: bool):
 
 # The "open" command is repeated because I'm too lazy to define it and then just call it later, code redundancy go brr #
 def pyWallPath(folder):
-    return pathlib.Path(folder + "//PyWall.exe")
+    return pathlib.Path(str(folder) + "//PyWall.exe")
 
 
 def pyWallScript(folder):
-    return pathlib.Path(folder + "//main.py")
+    return pathlib.Path(str(folder) + "//main.py")
 
 
 def getFolder():
@@ -63,10 +65,10 @@ def allowAccess(filenames, params):
     try:
         if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
             subprocess.call(
-                f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow True -rule_type {params}', shell=True)
+                f'cmd /c cd "{folder}" && PyWall.exe -file "{filenames}" -allow true -rule_type {params}', shell=True)
             # input() #
             subprocess.call(
-                f'cmd /c cd {folder} && python {folder}\\main.py -file="{filenames}" -allow true -rule_type {params}', shell=True)
+                f'cmd /c cd "{folder}" && python "{folder}\\main.py" -file "{filenames}" -allow true -rule_type {params}', shell=True)
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -82,10 +84,10 @@ def denyAccess(filenames, params):
     try:
         if pyWallPath(folder).is_file() or pyWallScript(folder).is_file():
             subprocess.call(
-                f'cmd /c cd {folder} && PyWall.exe -file="{filenames}" -allow False -rule_type {params}', shell=True)
+                f'cmd /c cd "{folder}" && PyWall.exe -file "{filenames}" -allow false -rule_type {params}', shell=True)
             # input() #
             subprocess.call(
-                f'cmd /c cd {folder} && python {folder}\\main.py -file="{filenames}" -allow False -rule_type {params}', shell=True)
+                f'cmd /c cd "{folder}" && python "{folder}\\main.py" -file "{filenames}" -allow false -rule_type {params}', shell=True)
             # input() #
         else:
             os.remove(getScriptFolder())
@@ -142,6 +144,7 @@ def createDenyMenu():
 
 def updateRegistry():
     import winreg
+
     # Command registry #
     # Yes, this was just as tedious as you think it was #
     FILES_ALLOW_BOTH = r"Software\Classes\*\shell\PyWall\shell\Allow Internet Access\shell\Allow inbound " \
@@ -174,32 +177,44 @@ def updateRegistry():
     PYWALL_REG_FILE = r"Software\Classes\*\shell\PyWall"
     PYWALL_REG_FOLDER = r"Software\Classes\Directory\shell\PyWall"
 
-    # This key will only work if run from an executable, and not if it is run from source #
-    folder = getFolder()
-    PYWALL_KEY = winreg.OpenKey(key, PYWALL_REG_FILE, 0, winreg.KEY_ALL_ACCESS)
-    winreg.SetValueEx(PYWALL_KEY, 'Icon', 0, winreg.REG_SZ,
-                      str(pyWallPath(folder)) + ",0")
-    PYWALL_KEY.Close()
-    PYWALL_FOLDER_KEY = winreg.OpenKey(
-        key, PYWALL_REG_FOLDER, 0, winreg.KEY_ALL_ACCESS)
-    winreg.SetValueEx(PYWALL_FOLDER_KEY, 'Icon', 0,
-                      winreg.REG_SZ, str(pyWallPath(folder)) + ",0")
-    PYWALL_FOLDER_KEY.Close()
+    try:
+        # This key will only work if run from an executable, and not if it is run from source #
+        folder = getFolder()
+        try:
+            PYWALL_KEY = winreg.OpenKey(
+                key, PYWALL_REG_FILE, 0, winreg.KEY_ALL_ACCESS)
+            winreg.SetValueEx(PYWALL_KEY, 'Icon', 0, winreg.REG_SZ,
+                              str(pyWallPath(folder)) + ",0")
+            winreg.CloseKey(PYWALL_KEY)
+        except Exception as e:
+            print(f"Warning: Could not set file icon: {e}")
 
-    for x in sub_keys:
-        current_sub_key = winreg.QueryValue(key, x)
-        argIndex = winreg.QueryValue(key, x).index(" -c ")
-        current_sub_key = current_sub_key.replace(
-            r"([' '.join(sys.argv[1:]) ],'", ",").replace("')\"", ",")
-        # About the dumbest way to query for the third semicolon #
-        firstSemi = current_sub_key.find(";")
-        secondSemi = current_sub_key.find(";", firstSemi + 1)
-        thirdSemi = current_sub_key.find(";", secondSemi + 1)
-        # The context menu must be tested with a compiled version of PyWall, otherwise it won't work #
-        # PR's that address this are welcome #
-        replacement_sub_key = current_sub_key[:argIndex +
-                                              4] + current_sub_key[thirdSemi + 1:]
-        winreg.SetValue(key, x, winreg.REG_SZ, replacement_sub_key)
+        try:
+            PYWALL_FOLDER_KEY = winreg.OpenKey(
+                key, PYWALL_REG_FOLDER, 0, winreg.KEY_ALL_ACCESS)
+            winreg.SetValueEx(PYWALL_FOLDER_KEY, 'Icon', 0,
+                              winreg.REG_SZ, str(pyWallPath(folder)) + ",0")
+            winreg.CloseKey(PYWALL_FOLDER_KEY)
+        except Exception as e:
+            print(f"Warning: Could not set folder icon: {e}")
+
+        for x in sub_keys:
+            current_sub_key = winreg.QueryValue(key, x)
+            argIndex = winreg.QueryValue(key, x).index(" -c ")
+            current_sub_key = current_sub_key.replace(
+                r"([' '.join(sys.argv[1:]) ],'", ",").replace("')\"", ",")
+            # About the dumbest way to query for the third semicolon #
+            firstSemi = current_sub_key.find(";")
+            secondSemi = current_sub_key.find(";", firstSemi + 1)
+            thirdSemi = current_sub_key.find(";", secondSemi + 1)
+            # The context menu must be tested with a compiled version of PyWall, otherwise it won't work #
+            # PR's that address this are welcome #
+            replacement_sub_key = current_sub_key[:argIndex +
+                                                  4] + current_sub_key[thirdSemi + 1:]
+            winreg.SetValue(key, x, winreg.REG_SZ, replacement_sub_key)
+
+    except Exception as e:
+        print(f"Error updating registry: {e}")
 
 
 def removeInternetAccessMenu():

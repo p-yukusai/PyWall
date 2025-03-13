@@ -4,19 +4,16 @@ PyWall - A simple firewall management tool for Windows.
 Allows easy control of inbound and outbound connections for applications.
 """
 
-import sys
-import os
 import argparse
+import os
 import pathlib
+import sys
+
 from PyQt5.QtWidgets import QApplication
-from src.config import (
-    config_exists,
-    validate_config,
-    make_default,
-    document_folder
-)
-from src.logger import logException, actionLogger
+
 from src.cmdWorker import access_handler
+from src.config import config_exists, document_folder, make_default, validate_config
+from src.logger import actionLogger, logException
 from src.shellHandler import createInternetAccessMenu, removeInternetAccessMenu
 
 

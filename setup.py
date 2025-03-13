@@ -5,7 +5,8 @@ Installs the application and dependencies.
 """
 
 import sys
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 # Check Python version
 if sys.version_info < (3, 6):
