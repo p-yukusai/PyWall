@@ -13,9 +13,17 @@ if sys.version_info < (3, 6):
     print("PyWall requires Python 3.6 or later")
     sys.exit(1)
 
+if sys.platform != "win32":
+    print("PyWall is only supported on Windows.")
+    sys.exit(1)
+
 # Read requirements
-with open('requirements.txt', 'r') as f:
+with open('requirements.txt', 'r', encoding='utf-8') as f:
     requirements = f.read().splitlines()
+
+# Remove comments and empty lines from requirements
+requirements = [req for req in requirements if req and not req.startswith('#')]
+
 
 setup(
     name="PyWall",
