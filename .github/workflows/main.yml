@@ -15,18 +15,11 @@ jobs:
         uses: palewire/install-python-pipenv-pipfile@v4
         with: 
             python-version: 3.11
-      - name: Install dependencies and build
-        shell: pwsh
+      - name: Build
         run: |
-              # Activate virtual environment
-              Write-Host "Activating virtual environment..." -ForegroundColor Green
-              $env:PIPENV_VENV_IN_PROJECT = "true"
-              $venvPath = & pipenv --venv
-              # Build the application
-              Write-Host "Building PyWall..." -ForegroundColor Green
+              echo Building PyWall...
               pipenv run pyinstaller "main.py" --noconfirm --onedir --uac-admin -n "PyWall" --icon "img/PyWall.ico" --contents-directory . --add-data "img;img/" --add-data "src;src/" --add-data "$venvPath\Lib\site-packages\context_menu;context_menu/"
-              Write-Host "Build completed successfully!" -ForegroundColor Green
-              Write-Host "The executable can be found in the dist/PyWall directory." -ForegroundColor Cyan
+              echo Build success
    
       - name: Zip artifact
         uses: vimtor/action-zip@v1.2
