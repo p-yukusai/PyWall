@@ -5,6 +5,8 @@ Notification and message display functionality for PyWall.
 import sys
 import os
 from PyQt5.QtWidgets import QMessageBox, QApplication, QStyle
+from windows_toasts import ToastDuration
+
 from src.config import get_config
 
 
@@ -77,24 +79,27 @@ def toastNotification(title, message):
         return
 
     try:
-        from win10toast import ToastNotifier
-        toaster = ToastNotifier()
+        from windows_toasts import WindowsToaster, Toast, ToastDisplayImage
+        toaster = WindowsToaster('PyWall')
+        newToast = Toast()
+
         icon_path = None
 
         # Try to find the icon file
         script_dir = os.path.dirname(
             os.path.dirname(os.path.abspath(__file__)))
-        possible_icon = os.path.join(script_dir, "resources", "pywall.ico")
+        possible_icon = os.path.join(script_dir, "resources", "PyWall.ico")
+        if not(os.path.exists(possible_icon)):
+            possible_icon = os.path.join(script_dir, "img", "PyWall.ico")
         if os.path.exists(possible_icon):
             icon_path = possible_icon
 
-        toaster.show_toast(
-            title,
-            message,
-            icon_path=icon_path,
-            duration=5,
-            threaded=True
-        )
+        newToast.text_fields = [title, message]
+        print(newToast.text_fields)
+        newToast.AddImage(ToastDisplayImage.fromPath(possible_icon))
+        newToast.duration = ToastDuration.Default
+        toaster.show_toast(newToast)
+
     except ImportError:
-        # Fall back to message box if win10toast is not available
+        # Fall back to message box if the current windows toast library is not available
         infoMessage(title, None, message)

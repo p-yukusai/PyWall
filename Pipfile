@@ -7,9 +7,10 @@ name = "pypi"
 pyqt5 = "*"
 qt-material = "*"
 context-menu = "*"
-winotify = "*"
+windows-toasts = "*"
 
 [dev-packages]
+pyinstaller = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.11"

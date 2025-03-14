@@ -42,14 +42,14 @@ def main():
 
     parser = argparse.ArgumentParser(
         description='PyWall - Firewall Management Tool')
-    parser.add_argument('-file', type=str,
-                        help='Target file or directory path')
-    parser.add_argument('-allow', type=str,
+    parser.add_argument('-file',
+                        help='Target file or directory path', type=str)
+    parser.add_argument('-allow',
                         choices=['true', 'True', 'false', 'False'],
-                        help='Allow or deny internet access')
-    parser.add_argument('-rule_type', type=str,
+                        help='Allow or deny internet access', type=str)
+    parser.add_argument('-rule_type',
                         choices=['in', 'out', 'both'],
-                        help='Rule type: inbound, outbound, or both')
+                        help='Rule type: inbound, outbound, or both', type=str)
     parser.add_argument('-install', action='store_true',
                         help='Install context menu')
     parser.add_argument('-uninstall', action='store_true',
@@ -58,8 +58,11 @@ def main():
                         help='Open configuration file')
     parser.add_argument("-c", help="Shell handler", type=str)
 
-    args = parser.parse_args()
-
+    try:
+        args = parser.parse_args()
+    except AttributeError as Args:
+        print (Args)
+        args = None
     # Save the current folder for context menu access
     if not checkExistingInstall():
         saveCurrentFolder()

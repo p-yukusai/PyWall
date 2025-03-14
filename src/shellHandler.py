@@ -144,7 +144,6 @@ def createDenyMenu():
 
 def updateRegistry():
     import winreg
-
     # Command registry #
     # Yes, this was just as tedious as you think it was #
     FILES_ALLOW_BOTH = r"Software\Classes\*\shell\PyWall\shell\Allow Internet Access\shell\Allow inbound " \

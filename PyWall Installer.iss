@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "PyWall"
-#define MyAppVersion "1.7" ; Major version only, can be fetched from config.py
+#define MyAppVersion "1.8" ; Major version only, can be fetched from config.py
 #define MyAppPublisher "Yukusai"
 #define MyAppURL "https://github.com/p-yukusai/PyWall"
 #define MyAppExeName "PyWall.exe"
@@ -45,4 +45,5 @@ Source: "dist\PyWall\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs c
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+
 

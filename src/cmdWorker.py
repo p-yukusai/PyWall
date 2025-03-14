@@ -193,9 +193,8 @@ def access_handler(path, action, rule_type: str):
                     pass
                 # Fixed bug: Changed from "".join(sys.argv) to " ".join(sys.argv)
                 args = " ".join(sys.argv)
-                ctypes.windll.shell32.ShellExecuteW(
-                    None, "runas", sys.executable, args, None, 1)
-            sys.exit("Admin re-run")
+                ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, None, 1)
+                sys.exit("Admin re-run")
 
     except Exception as argument:
         logException(argument)  # Fixed: Changed from Argument to argument

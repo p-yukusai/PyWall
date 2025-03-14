@@ -8,7 +8,7 @@ param(
 
 # Ensure dependencies are installed
 Write-Host "Installing dependencies..." -ForegroundColor Green
-pipenv sync
+pipenv sync -d
 
 # Activate virtual environment
 Write-Host "Activating virtual environment..." -ForegroundColor Green
@@ -20,7 +20,8 @@ Write-Host "Building PyWall..." -ForegroundColor Green
 
 $windowParam = if (-not $ShowConsole) { "--windowed" } else { "" }
 
-pipenv run pyinstaller main.py --noconfirm --onedir --uac-admin -n "PyWall" --icon "img/PyWall.ico" $windowParam --add-data "img;img/" --add-data "src;src/" --add-data "$venvPath\Lib\site-packages\context_menu;context_menu/"
+cd ..
+pipenv run pyinstaller "main.py" --noconfirm --onedir --uac-admin -n "PyWall" --icon "img/PyWall.ico" $windowParam  --contents-directory . --add-data "img;img/" --add-data "src;src/" --add-data "$venvPath\Lib\site-packages\context_menu;context_menu/"
 
 Write-Host "Build completed successfully!" -ForegroundColor Green
 Write-Host "The executable can be found in the dist/PyWall directory." -ForegroundColor Cyan

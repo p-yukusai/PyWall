@@ -17,7 +17,7 @@
   <img alt="ko-fi" src="https://img.shields.io/badge/Donate-Support%20me%20on%20Ko--Fi-red?style=for-the-badge&logo=ko-fi">
 </a>
 <a href=https://github.com/p-yukusai/PyWall/actions>
-    <img alt="Build" src="https://img.shields.io/github/workflow/status/p-yukusai/PyWall/PyWall%20CI?style=for-the-badge">
+    <img alt="Build" src="https://img.shields.io/github/actions/workflow/status/p-yukusai/PyWall/main.yml?style=for-the-badge">
 </a>
 </h1>
 
@@ -62,7 +62,7 @@ This program has the ability to block or allow almost any file, it can even do s
 PyWall can write and delete both [Inbound and Outbound rules](https://superuser.com/questions/48343/what-are-inbound-and-outbound-rules-for-windows-firewall).
 The code was written (to the best of my ability) with the intent of being read by just about anyone, so go right ahead and look through my spaghetti code by yourself if you want to know how the app works in more detail!
 
-## Technical explanation 👩‍🔬
+## Technical explanation 👩🔬
 
 #### Tl;dr
 
