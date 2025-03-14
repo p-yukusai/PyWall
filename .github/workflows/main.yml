@@ -17,7 +17,7 @@ jobs:
               # Ensure dependencies are installed
               Write-Host "Installing dependencies..." -ForegroundColor Green
               pip install pipenv
-              pipenv sync -d
+              pipenv install --dev
               # Activate virtual environment
               Write-Host "Activating virtual environment..." -ForegroundColor Green
               $env:PIPENV_VENV_IN_PROJECT = "true"
