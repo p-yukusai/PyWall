@@ -18,7 +18,7 @@ jobs:
       - name: Build
         run: |
               echo Building PyWall...
-              pipenv run pyinstaller "main.py" --noconfirm --onedir --uac-admin -n "PyWall" --icon "img/PyWall.ico" --contents-directory . --add-data "img;img/" --add-data "src;src/" --add-data "$venvPath\Lib\site-packages\context_menu;context_menu/"
+              pipenv run pyinstaller "main.py" --noconfirm --onedir --uac-admin -n "PyWall" --icon "img/PyWall.ico" --contents-directory . --add-data "img;img/" --add-data "src;src/" --add-data "C:\Users\runneradmin\.virtualenvs\PyWall-65-QOBsy\Lib\site-packages\context_menu;context_menu/"
               echo Build success
    
       - name: Zip artifact
