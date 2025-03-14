@@ -5,8 +5,9 @@ import sys  # Added missing sys import at the module level
 
 from context_menu import menus
 
-from src.config import document_folder, get_config
-from src.pop import icons, infoMessage, toastNotification
+from src.config import document_folder
+from src.pop import toastNotification
+
 
 # Having to define stuff anew in this script, since it's technically separate in the context of the shell
 # this means duping already existing code :(
@@ -24,11 +25,11 @@ def pop(title, text, close: bool):
 
 # The "open" command is repeated because I'm too lazy to define it and then just call it later, code redundancy go brr #
 def pyWallPath(folder):
-    return pathlib.Path(str(folder) + "//PyWall.exe")
+    return pathlib.Path(str(folder) + "/PyWall.exe")
 
 
 def pyWallScript(folder):
-    return pathlib.Path(str(folder) + "//main.py")
+    return pathlib.Path(str(folder) + "/main.py")
 
 
 def getFolder():

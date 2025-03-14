@@ -637,8 +637,10 @@ class UI(PyQt5.QtWidgets.QMainWindow):
             infoMessage(
                 "Not installed", "Shell handler has not yet been installed", message, icon)
             return False
-
-        src.shellHandler.removeInternetAccessMenu()
+        try:
+            src.shellHandler.removeInternetAccessMenu()
+        except FileNotFoundError:
+            actionLogger("Key doesn't exist, ignoring...")
         icon = icons("info")
         infoMessage("Shell handler successfully removed.", "Successfully removed",
                     "The PyWall option will no longer be available when right-clicking a file or a folder", icon)
