@@ -6,7 +6,7 @@ import sys  # Added missing sys import at the module level
 from context_menu import menus
 
 from src.config import document_folder, get_config
-from src.pop import icons, infoMessage
+from src.pop import icons, infoMessage, toastNotification
 
 # Having to define stuff anew in this script, since it's technically separate in the context of the shell
 # this means duping already existing code :(
@@ -16,29 +16,10 @@ def getScriptFolder():
     document_folder_path = str(document_folder())
     return document_folder_path + "\\PyWall\\Executable.txt"
 
-
-# Making the messagebox in Qt saves space in the executable, otherwise we would have the good old Tkinter bloat #
 def pop(title, text, close: bool):
-    from PyQt5.QtWidgets import QApplication, QMessageBox, QWidget
-
-    def window():
-        app = QApplication(sys.argv)
-        win = QWidget()
-        showDialog()
-        sys.exit(app.exec_())
-
-    def showDialog():
-        msgBox = QMessageBox()
-        msgBox.setIcon(QMessageBox.Information)
-        msgBox.setText(text)
-        msgBox.setWindowTitle(title)
-        msgBox.setStandardButtons(QMessageBox.Ok)
-
-        returnValue = msgBox.exec()
-        if close:
-            sys.exit(0)
-
-    window()
+    toastNotification(title, text)
+    if close:
+        sys.exit(0)
 
 
 # The "open" command is repeated because I'm too lazy to define it and then just call it later, code redundancy go brr #
@@ -199,7 +180,7 @@ def updateRegistry():
 
         for x in sub_keys:
             current_sub_key = winreg.QueryValue(key, x)
-            argIndex = winreg.QueryValue(key, x).index(" -c ")
+            arg_index = winreg.QueryValue(key, x).index(" -c ")
             current_sub_key = current_sub_key.replace(
                 r"([' '.join(sys.argv[1:]) ],'", ",").replace("')\"", ",")
             # About the dumbest way to query for the third semicolon #
@@ -208,7 +189,7 @@ def updateRegistry():
             thirdSemi = current_sub_key.find(";", secondSemi + 1)
             # The context menu must be tested with a compiled version of PyWall, otherwise it won't work #
             # PR's that address this are welcome #
-            replacement_sub_key = current_sub_key[:argIndex +
+            replacement_sub_key = current_sub_key[:arg_index +
                                                   4] + current_sub_key[thirdSemi + 1:]
             winreg.SetValue(key, x, winreg.REG_SZ, replacement_sub_key)
 

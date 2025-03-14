@@ -57,31 +57,40 @@ def main():
     parser.add_argument('-config', action='store_true',
                         help='Open configuration file')
     parser.add_argument("-c", help="Shell handler", type=str)
-
     try:
-        args = parser.parse_args()
-    except AttributeError as Args:
-        print (Args)
+        all_args = parser.parse_known_args()
+        args = all_args[0]
+    except IndexError:
+        all_args = sys.argv
         args = None
     # Save the current folder for context menu access
     if not checkExistingInstall():
         saveCurrentFolder()
 
     # Shell handler
-    if args.c is not None:
+    if args.c:
         argument = str(args.c)
         # Access handling
         if "allowAccess" in argument or "denyAccess" in argument:
-            arg = argument.split(",")
-            file_path = sys.argv[3]
-            if "allowAccess" in arg[0]:
+            print(all_args)
+            arg = all_args[1]
+            file_path = arg[0]
+            if "allowAccess" in argument:
                 action = "allow"
             else:
                 action = "deny"
+            if ",in" in argument:
+                rule_type = "in"
+            elif ",out" in argument:
+                rule_type = "out"
+            else:
+                rule_type = "both"
+
+            shell_action = str(args.c).split(",")
             actionLogger(
-                f"Shell action is {arg[0]}, filename is {file_path}, "
-                f"rule type is {arg[1]}, proceeding...")
-            access_handler(pathlib.Path(file_path), action, arg[1])
+                f"Shell action is {shell_action[0]}, filename is {file_path}, "
+                f"rule type is {rule_type}, proceeding...")
+            access_handler(pathlib.Path(file_path), action, rule_type)
             return
 
     if args.install:

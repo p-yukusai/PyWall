@@ -102,4 +102,4 @@ def toastNotification(title, message):
 
     except ImportError:
         # Fall back to message box if the current windows toast library is not available
-        infoMessage(title, None, message)
+        infoMessage(title, None, message, icons("warning"))
