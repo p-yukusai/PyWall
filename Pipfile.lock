@@ -151,12 +151,12 @@
         },
         "qt-material": {
             "hashes": [
-                "sha256:b5dbb5ade97217cf7ae336bb7c047c90beb39dc7f2048a498c916ad5f2f7ae23",
-                "sha256:ceddd9b3aca167e5d620644ce350c3df4c0220c5df457ab6059f634d7ac747e3"
+                "sha256:660523341ae45b79d222bf15e202ec76ba3bf5e7e82170b66759738d7bb4873d",
+                "sha256:b500a0c1f5ef8f46a8cf037d1aa5bdf9ea4eb618180b6332539dfbdd0647ad0d"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.7'",
-            "version": "==2.14"
+            "version": "==2.17"
         },
         "typing-extensions": {
             "hashes": [
